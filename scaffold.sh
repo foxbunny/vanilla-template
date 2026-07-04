@@ -37,6 +37,7 @@ cp -R "$here/.claude" "$target/.claude"       # Claude Code adapter (optional)
 cp "$here/AGENTS.md" "$target/AGENTS.md"
 cp "$here/CLAUDE.md" "$target/CLAUDE.md"
 cp "$here/scaffold.sh" "$target/scaffold.sh"
+cp "$here/add-font.sh" "$target/add-font.sh"
 mkdir -p "$target/todo"
 # Start the new project's diary and notes empty rather than copying ours.
 printf '# Diary\n\nNewest first. Record non-obvious things found while building.\n' > "$target/todo/diary.md"

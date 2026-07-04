@@ -7,6 +7,23 @@ absolute.
 
 ---
 
+## 2026-07-04 — Transfonter flattens a variable font to one weight
+
+Drove Transfonter (transfonter.org) in the browser to convert Merriweather Sans
+(downloaded from Google Fonts) to woff2. It worked, but the output had **no bold**:
+fonttools confirmed the woff2 were static (`fvar` gone), keeping only the font's
+default instance (Regular 400). Google Fonts ships Merriweather Sans as a
+*variable* font, and Transfonter emits only the default instance — so headings and
+buttons would have got browser faux-bold.
+
+Fix: convert **locally** with fonttools instead —
+`python3 -m fontTools.subset FONT.ttf --unicodes=<latin+ext> --flavor=woff2` keeps
+the weight axis, giving a variable woff2 with the whole 300–800 range (real bold)
+from one file per style. `add-font.sh` does this for a raw font, and still accepts
+a Transfonter zip for static fonts. Lesson: for a variable font, self-host the
+variable woff2; don't let a converter flatten it. (fonttools needs
+`pip install --break-system-packages fonttools brotli` in this locked-down env.)
+
 ## 2026-07-04 — The icon sprite must resolve next to `common.js`, not the page
 
 `<x-icon>` first fetched `'icons.svg'`, which the browser resolves relative to

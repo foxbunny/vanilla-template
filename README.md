@@ -226,6 +226,8 @@ When a requirement actually comes up:
 public/
   common.js            the ~200-line toolkit (selection, api, render, toast, icons, i18n)
   common.css           design tokens + every base component
+  fonts.css            self-hosted @font-face rules (imported by common.css)
+  fonts/               the woff2 files + their licence
   icons.svg            the SVG sprite
   design-system.html   living gallery — develop the look here
   design-system.css    gallery layout only (no component styles)
@@ -249,4 +251,5 @@ todo/
   notes.md             design decided up front
   diary.md             dated log of everything discovered while building
 scaffold.sh            stamp out a new named project from this template
+add-font.sh            add a self-hosted web font (local convert or Transfonter zip)
 ```

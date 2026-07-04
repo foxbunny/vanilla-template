@@ -126,6 +126,7 @@ portable command body you follow (and, per tool, invoke by name). Reach for:
 - **`skills/new-page.md`** — start a page from the canonical example trio.
 - **`skills/add-icon.md`** — add a `<symbol>` to `icons.svg` for `<x-icon>`.
 - **`skills/design.md`** — change the look through `common.css` tokens + the gallery.
+- **`skills/add-font.md`** — add a self-hosted web font (subset woff2 + `@font-face`).
 - **`skills/review.md`** — check changed files against `rules/`; report, don't fix.
 - **`skills/diary.md`** — append a dated entry to `todo/diary.md`.
 

@@ -63,5 +63,6 @@ in `AGENTS.md` and let each tool's native rule file reference them.
 | [new-page](new-page.md) | A new page's `NAME.html/.js/.css` trio, copied from the canonical example and trimmed. |
 | [add-icon](add-icon.md) | One `<symbol>` added to `icons.svg` so `<x-icon name="…">` can use it. |
 | [design](design.md) | A look-and-feel change made in `common.css` tokens and checked in the gallery. |
+| [add-font](add-font.md) | A self-hosted web font added as a subset woff2 + `@font-face` (convert locally or from a Transfonter zip). |
 | [review](review.md) | Changed files checked against the house rules; violations reported, not fixed. |
 | [diary](diary.md) | One dated, append-only entry in `todo/diary.md` for a non-obvious thing learned. |
