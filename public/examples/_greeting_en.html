@@ -1,0 +1,12 @@
+<!-- English strings, loaded on demand by loadFragments('greeting', 'en').
+     Several greeting variants share the same name + lang, so one is picked at
+     random for variety. The inbox line varies by plural. A translator edits this
+     file — plain HTML, where the text already lives. -->
+
+<template data-name="greeting" lang="en">Hello, {name}!</template>
+<template data-name="greeting" lang="en">Hi there, {name}!</template>
+<template data-name="greeting" lang="en">Welcome back, {name}!</template>
+<template data-name="greeting" lang="en">Good to see you, {name}.</template>
+
+<template data-name="inbox" lang="en" data-plural="one">You have {count} unread message.</template>
+<template data-name="inbox" lang="en" data-plural="other">You have {count} unread messages.</template>

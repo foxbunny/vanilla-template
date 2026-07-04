@@ -1,0 +1,390 @@
+/* The shared look. Every page links this; design-system.html shows everything
+   it defines. Change a token here and the whole app — and the gallery — moves
+   together.
+
+   Rules the rest of the app follows:
+     · Colours, sizes, and timing are tokens (custom properties), never literals
+       scattered through component rules.
+     · Sizes are relative (rem / em / %), never px — so one font-size change
+       rescales everything.
+     · State is a data-* attribute; CSS decides what each state looks like.
+     · [data-part] is a JS hook and is never styled. Style id / class instead. */
+
+
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body { min-height: 100dvh; line-height: 1.5; }
+
+img, svg, video { display: block; max-width: 100%; }
+
+input, button, textarea, select { font: inherit; color: inherit; }
+
+:where(button) { cursor: pointer; }
+
+
+/* ── Typed tokens ──────────────────────────────────────────────────────────
+   Registered as real <color>s: a bad override falls back to the initial value
+   instead of breaking everything downstream. The theme flip animates through
+   the background/color properties that read these, not the tokens themselves —
+   transitioning a registered token directly can get stuck. */
+
+@property --accent   { syntax: '<color>'; inherits: true; initial-value: oklch(56% 0.15 290); }
+@property --ink      { syntax: '<color>'; inherits: true; initial-value: oklch(25% 0.02 290); }
+@property --surface  { syntax: '<color>'; inherits: true; initial-value: oklch(99% 0.004 290); }
+
+
+/* ── Tokens ────────────────────────────────────────────────────────────────
+   The whole palette is expressed as lightness (L), chroma (C), hue (H) parts,
+   so light/dark is mostly one lightness flip and the layer system below can do
+   arithmetic on L. */
+
+:root {
+	color-scheme: light dark;
+
+	/* Hue + chroma the surfaces are tinted with (a hint of the accent). */
+	--h: 290;
+	--c: 0.004;
+
+	/* Layer lightness: where the base surface starts and how much each nested
+	   layer shifts. Dark mode flips the step's sign (see below). */
+	--surface-l: 99%;
+	--layer-step: -3%;
+
+	--ink: oklch(25% 0.02 var(--h));
+	--muted: oklch(55% 0.02 var(--h));
+	--line: oklch(88% 0.01 var(--h));
+
+	--accent: oklch(56% 0.15 var(--h));
+	--accent-ink: oklch(99% 0.01 var(--h));   /* text on an accent fill */
+
+	--info:    oklch(60% 0.13 250);
+	--success: oklch(62% 0.15 150);
+	--warning: oklch(72% 0.15 80);
+	--danger:  oklch(60% 0.19 25);
+
+	/* Spacing scale. The small steps (1–5) are rem, fixed to the root size — use
+	   them for gaps and padding. The large steps (6–10) are em, so big layout
+	   whitespace scales with the text of whatever it's set on. */
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 1rem;
+	--space-4: 1.5rem;
+	--space-5: 2.5rem;
+	--space-6: 4em;
+	--space-7: 6em;
+	--space-8: 8em;
+	--space-9: 12em;
+	--space-10: 16em;
+
+	--radius: 0.5rem;
+	--radius-pill: 100rem;
+
+	--ring: 0.15rem;                         /* focus outline width */
+	--shadow: 0 0.15rem 0.5rem oklch(20% 0.03 var(--h) / 0.12);
+
+	--tap: 2.75rem;                          /* min touch target */
+
+	--fast: 0.12s;
+	--slow: 0.3s;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--surface-l: 15%;
+		--layer-step: 4%;                    /* nested layers get lighter in dark */
+
+		--ink: oklch(92% 0.02 var(--h));
+		--muted: oklch(65% 0.02 var(--h));
+		--line: oklch(35% 0.02 var(--h));
+
+		--accent: oklch(75% 0.14 var(--h));
+		--accent-ink: oklch(18% 0.03 var(--h));
+
+		--shadow: 0 0.15rem 0.6rem oklch(0% 0 0 / 0.5);
+	}
+}
+
+/* Manual override: <html data-theme="dark"> forces one theme regardless of the
+   OS setting. Same declarations, just triggered by the attribute. */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] {
+	color-scheme: dark;
+	--surface-l: 15%; --layer-step: 4%;
+	--ink: oklch(92% 0.02 var(--h)); --muted: oklch(65% 0.02 var(--h)); --line: oklch(35% 0.02 var(--h));
+	--accent: oklch(75% 0.14 var(--h)); --accent-ink: oklch(18% 0.03 var(--h));
+	--shadow: 0 0.15rem 0.6rem oklch(0% 0 0 / 0.5);
+}
+
+
+/* ── The layer system ──────────────────────────────────────────────────────
+   A surface's tone deepens one step for each surface it sits inside — a card in
+   a card in the page separates automatically, with no per-depth class to write.
+   A custom property can't add a step to its own inherited value (that's a
+   cascade cycle, which collapses to nothing), so the depth is spelled out with
+   nesting selectors, through seven levels — far past any real layout. They all
+   use :where(), so they carry no specificity and the deepest match just wins by
+   coming last in the file. */
+
+:where(body, .layer, .card) {
+	--_l: var(--surface-l);
+	--surface: oklch(var(--_l) var(--c) var(--h));
+	background: var(--surface);
+	color: var(--ink);
+}
+
+:where(body, .layer, .card) :where(.layer, .card)
+	{ --_l: calc(var(--surface-l) + 1 * var(--layer-step)); }
+:where(body, .layer, .card) :where(.layer, .card) :where(.layer, .card)
+	{ --_l: calc(var(--surface-l) + 2 * var(--layer-step)); }
+:where(body, .layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card)
+	{ --_l: calc(var(--surface-l) + 3 * var(--layer-step)); }
+:where(body, .layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card)
+	{ --_l: calc(var(--surface-l) + 4 * var(--layer-step)); }
+:where(body, .layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card)
+	{ --_l: calc(var(--surface-l) + 5 * var(--layer-step)); }
+:where(body, .layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card) :where(.layer, .card)
+	{ --_l: calc(var(--surface-l) + 6 * var(--layer-step)); }
+
+
+/* ── Base document ─────────────────────────────────────────────────────── */
+
+body {
+	font-family: system-ui, sans-serif;
+	font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+}
+
+:where(a) { color: var(--accent); text-underline-offset: 0.15em; }
+
+:where(h1, h2, h3) { line-height: 1.2; text-wrap: balance; }
+:where(p, li) { text-wrap: pretty; }
+
+/* One visible focus style for everything reachable by keyboard. */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+	outline: var(--ring) solid var(--accent);
+	outline-offset: 0.15rem;
+}
+
+
+/* ── Buttons ───────────────────────────────────────────────────────────────
+   One rule; the variant is a data-* on the element, the look is a few local
+   knobs the variant overrides. */
+
+button, .button {
+	--btn-bg: transparent;
+	--btn-ink: var(--accent);
+	--btn-line: var(--accent);
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-2);
+	min-height: var(--tap);
+	padding: var(--space-2) var(--space-4);
+
+	border: 0.1rem solid var(--btn-line);
+	border-radius: var(--radius-pill);
+	background: var(--btn-bg);
+	color: var(--btn-ink);
+	font-weight: 600;
+	text-decoration: none;
+
+	transition: background var(--fast), color var(--fast), border-color var(--fast);
+}
+
+button:hover, .button:hover { --btn-bg: var(--accent); --btn-ink: var(--accent-ink); }
+
+button[data-variant="primary"] { --btn-bg: var(--accent); --btn-ink: var(--accent-ink); }
+button[data-variant="primary"]:hover { filter: brightness(1.08); }
+
+button[data-variant="ghost"] { --btn-line: transparent; }
+button[data-variant="ghost"]:hover { --btn-bg: oklch(var(--surface-l) var(--c) var(--h) / 0); --btn-ink: var(--accent); --btn-line: var(--line); }
+
+button[data-variant="danger"] { --btn-ink: var(--danger); --btn-line: var(--danger); }
+button[data-variant="danger"]:hover { --btn-bg: var(--danger); --btn-ink: var(--accent-ink); }
+
+button:disabled, .button[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+
+
+/* ── Forms ─────────────────────────────────────────────────────────────────
+   Labels wrap their control, so no `for`/`id` bookkeeping. Validation styling
+   uses :user-invalid, which only fires after the user has actually interacted —
+   no red on a pristine field. */
+
+label { display: grid; gap: var(--space-1); }
+label > span { font-weight: 600; font-size: 0.9em; }
+
+input, textarea, select {
+	min-height: var(--tap);
+	padding: var(--space-2) var(--space-3);
+	border: 0.1rem solid var(--line);
+	border-radius: var(--radius);
+	background: oklch(var(--surface-l) var(--c) var(--h));
+}
+textarea { min-height: 6rem; resize: vertical; }
+
+input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+
+input:user-invalid, textarea:user-invalid {
+	border-color: var(--danger);
+	background: oklch(from var(--danger) l c h / 0.08);
+}
+
+/* An error message next to a field appears only once that field is invalid. */
+.field-error { color: var(--danger); font-size: 0.85em; }
+input:not(:user-invalid) ~ .field-error { display: none; }
+
+fieldset { border: 0.1rem solid var(--line); border-radius: var(--radius); padding: var(--space-3); }
+legend { padding-inline: var(--space-2); font-weight: 600; }
+
+
+/* ── Cards / sections ──────────────────────────────────────────────────── */
+
+/* Surface tone comes from the layer system above; this adds the chrome. */
+.card {
+	padding: var(--space-4);
+	border: 0.1rem solid var(--line);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+}
+
+
+/* ── Dialog ────────────────────────────────────────────────────────────────
+   Native <dialog> + showModal(): focus trap, Esc to close, and the top layer
+   all come free. */
+
+dialog {
+	margin: auto;
+	max-width: min(90vw, 32rem);
+	padding: var(--space-4);
+	border: 0.1rem solid var(--line);
+	border-radius: var(--radius);
+	background: oklch(var(--surface-l) var(--c) var(--h));
+	color: var(--ink);
+	box-shadow: var(--shadow);
+}
+dialog::backdrop { background: oklch(20% 0.03 var(--h) / 0.4); backdrop-filter: blur(2px); }
+
+
+/* ── Details / summary ─────────────────────────────────────────────────── */
+
+details { border: 0.1rem solid var(--line); border-radius: var(--radius); padding: var(--space-3); }
+summary { cursor: pointer; font-weight: 600; }
+details[open] summary { margin-bottom: var(--space-2); }
+
+
+/* ── Icons ─────────────────────────────────────────────────────────────────
+   <x-icon> renders one <svg><use>. It sizes to the surrounding text (1em) and
+   inherits its colour. Stroke width is the base divided by --icon-scale, so by
+   default (scale 1) the stroke grows with the icon; set --icon-scale to the
+   size multiple (2 for a 2× icon) to keep the stroke visually even. */
+
+x-icon {
+	--icon-scale: 1;
+
+	display: inline-flex;
+	width: 1em;
+	height: 1em;
+	vertical-align: -0.125em;
+}
+x-icon svg { width: 100%; height: 100%; }
+x-icon svg * {
+	fill: none;
+	stroke: currentColor;
+	stroke-width: calc(2 / var(--icon-scale));
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+/* A filled icon opts out of the stroke treatment. */
+x-icon[data-fill] svg * { fill: currentColor; stroke: none; }
+
+
+/* ── Toasts ────────────────────────────────────────────────────────────────
+   showToast() drops an <output.toast> in here. Its whole life is the expire
+   animation: it slides in, holds, fades, and common.js removes it when the
+   animation ends. Hovering pauses the countdown. No JS timer anywhere. */
+
+.toast-host {
+	position: fixed;
+	inset-block-end: var(--space-4);
+	inset-inline: 0;
+	z-index: 1000;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-2);
+
+	pointer-events: none;
+}
+
+.toast {
+	--toast-accent: var(--info);
+
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	max-width: min(90vw, 28rem);
+	padding: var(--space-2) var(--space-4);
+
+	border-inline-start: 0.25rem solid var(--toast-accent);
+	border-radius: var(--radius);
+	background: oklch(var(--surface-l) var(--c) var(--h));
+	color: var(--ink);
+	box-shadow: var(--shadow);
+
+	pointer-events: auto;
+	animation: toast-expire 5s both;
+}
+.toast:hover { animation-play-state: paused; }
+
+.toast[data-level="success"] { --toast-accent: var(--success); }
+.toast[data-level="warning"] { --toast-accent: var(--warning); }
+.toast[data-level="error"]   { --toast-accent: var(--danger); }
+
+@keyframes toast-expire {
+	0%        { opacity: 0; transform: translateY(1rem); }
+	6%, 88%   { opacity: 1; transform: none; }
+	100%      { opacity: 0; transform: translateY(0.5rem); }
+}
+
+
+/* ── Utilities ─────────────────────────────────────────────────────────── */
+
+/* Off-screen but read by screen readers. For a label a sighted user doesn't
+   need but assistive tech does. */
+.visually-hidden {
+	position: absolute;
+	width: 1px; height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+/* Vertical rhythm — THE way to stack things. The reset zeroes every margin, so a
+   run of paragraphs, form fields, or cards would collapse together. Put `.flow`
+   on their container and each child gets space above it. The gap defaults to 1em,
+   so prose spacing tracks the text size; set --flow-space to a --space-* token to
+   retune one container (tighter for a dense list, looser for page sections). This
+   is the single pattern — don't hand-roll another flex-column-with-gap. */
+.flow { display: flex; flex-direction: column; gap: var(--flow-space, 1em); }
+
+.row    { display: flex; gap: var(--space-3); align-items: center; }
+.wrap   { flex-wrap: wrap; }
+.grow   { flex: 1; }
+.center { display: grid; place-items: center; }
+
+
+/* Respect a request for less motion: drop transitions and let toasts settle. */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation-duration: 0.001s !important;
+		transition-duration: 0.001s !important;
+	}
+	.toast { animation: toast-expire 5s step-end both; }
+}

@@ -1,0 +1,78 @@
+/* Layout for the gallery page ONLY. No component styles live here — those are
+   all in common.css so the gallery shows exactly what the app ships. */
+
+body {
+	display: grid;
+	grid-template-columns: minmax(10rem, 14rem) 1fr;
+	grid-template-areas:
+		"head head"
+		"nav  main"
+		"foot foot";
+	gap: var(--space-4);
+	align-items: start;
+	max-width: 72rem;
+	margin-inline: auto;
+	padding: var(--space-4);
+}
+
+.muted { color: var(--muted); }
+
+.ds-head {
+	grid-area: head;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--space-3);
+	padding: var(--space-4);
+	border-radius: var(--radius);
+}
+.ds-head h1 { margin-inline-end: auto; }
+
+.ds-nav {
+	grid-area: nav;
+	position: sticky;
+	top: var(--space-4);
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-1);
+	padding: var(--space-3);
+	border-radius: var(--radius);
+}
+.ds-nav a { text-decoration: none; padding: var(--space-1) var(--space-2); border-radius: var(--radius); }
+.ds-nav a:hover { background: oklch(var(--surface-l) var(--c) var(--h)); }
+
+/* Both stack with the shared .flow pattern (in the HTML); here they only set how
+   far apart and add their own extras. */
+.ds-main { grid-area: main; --flow-space: var(--space-5); min-width: 0; }
+
+.ds-section { --flow-space: var(--space-3); scroll-margin-top: var(--space-4); }
+.ds-section > h2 { border-bottom: 0.1rem solid var(--line); padding-bottom: var(--space-2); }
+
+.ds-form { max-width: 28rem; }
+
+.ds-swatches { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.ds-swatch {
+	display: grid;
+	place-items: center;
+	width: 6rem;
+	height: 4rem;
+	border-radius: var(--radius);
+	font-size: 0.85em;
+}
+.ds-swatch-line { border: 0.2rem solid var(--line); }
+
+.ds-spaces { --flow-space: var(--space-2); overflow-x: auto; }
+.ds-spaces code { min-inline-size: 7rem; flex: none; }
+.ds-bar { block-size: 1rem; flex: none; background: var(--accent); border-radius: 0.15rem; }
+
+.ds-icons { display: flex; flex-wrap: wrap; gap: var(--space-4); font-size: 1.75rem; }
+.ds-icons figure { display: grid; justify-items: center; gap: var(--space-1); }
+.ds-icons figcaption { font-size: 0.7rem; color: var(--muted); }
+
+.ds-foot { grid-area: foot; padding-top: var(--space-4); border-top: 0.1rem solid var(--line); font-size: 0.9em; }
+
+/* Narrow: nav goes on top, single column. Content-based, not a device width. */
+@media (width < 48rem) {
+	body { grid-template-columns: 1fr; grid-template-areas: "head" "nav" "main" "foot"; }
+	.ds-nav { position: static; flex-direction: row; flex-wrap: wrap; }
+}

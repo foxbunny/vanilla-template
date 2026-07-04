@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Drag to reorder · Examples</title>
+	<link rel="stylesheet" href="../common.css">
+	<link rel="icon" href="../icons.svg#icon-menu">
+	<style>
+		body { max-width: 34rem; margin-inline: auto; padding: var(--space-4); }
+		ul { list-style: none; padding: 0; --flow-space: var(--space-2); }   /* stacks via .flow */
+		li {
+			display: flex; align-items: center; gap: var(--space-3);
+			padding: var(--space-3); border: 0.1rem solid var(--line); border-radius: var(--radius);
+			background: var(--surface);
+		}
+		li[data-dragging] { border-color: var(--accent); box-shadow: var(--shadow); opacity: 0.9; }
+		.handle { cursor: grab; touch-action: none; color: var(--muted); }
+		li[data-dragging] .handle { cursor: grabbing; }
+		.label { flex: 1; }
+	</style>
+	<script type="module" src="reorder.js"></script>
+</head>
+<body>
+	<p><a href="index.html">← Examples</a></p>
+	<h1>Drag to reorder</h1>
+	<p class="muted">Drag the handle to move an item — pointer events, so it works
+		with touch too. The <b>Sort A–Z</b> button reorders through a View
+		Transition, so the rows slide to their new places.</p>
+
+	<button type="button" data-part="sort" data-variant="ghost" style="margin-bottom: var(--space-3)">
+		<x-icon name="arrow-right"></x-icon> Sort A–Z
+	</button>
+
+	<ul class="flow" data-part="list"></ul>
+
+	<template data-part="row">
+		<li>
+			<span class="handle" data-part="handle"><x-icon name="menu"></x-icon></span>
+			<span class="label" data-part="label"></span>
+		</li>
+	</template>
+</body>
+</html>

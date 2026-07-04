@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Form validation · Examples</title>
+	<link rel="stylesheet" href="../common.css">
+	<link rel="icon" href="../icons.svg#icon-edit">
+	<script type="module" src="../common.js"></script>
+	<style>
+		body { max-width: 32rem; margin-inline: auto; padding: var(--space-4); }
+		form { --flow-space: var(--space-4); }   /* stacks via the shared .flow class */
+		output.result {
+			padding: var(--space-3); border-radius: var(--radius);
+			border-inline-start: 0.25rem solid var(--success);
+			background: oklch(var(--surface-l) var(--c) var(--h));
+			white-space: pre-wrap; font-family: ui-monospace, monospace;
+		}
+	</style>
+</head>
+<body>
+	<p><a href="index.html">← Examples</a></p>
+	<h1>Form validation</h1>
+	<p class="muted">The rules live on the inputs (<code>required</code>,
+		<code>type</code>, <code>pattern</code>, <code>minlength</code>). The
+		browser enforces them; <code>:user-invalid</code> only reddens a field
+		after the user has touched it. JavaScript just reads the result.</p>
+
+	<form class="flow" data-part="form" novalidate>
+		<label>
+			<span>Name</span>
+			<input name="name" required minlength="2" placeholder="Ada Lovelace"
+				autocomplete="name">
+			<small class="field-error">At least two characters.</small>
+		</label>
+
+		<label>
+			<span>Email</span>
+			<input name="email" type="email" required placeholder="ada@example.com"
+				autocomplete="email">
+			<small class="field-error">Enter a valid email address.</small>
+		</label>
+
+		<label>
+			<span>Age</span>
+			<input name="age" type="number" min="18" max="120" required placeholder="18+">
+			<small class="field-error">Must be 18 or older.</small>
+		</label>
+
+		<label>
+			<span>Website (optional)</span>
+			<input name="site" type="url" placeholder="https://…">
+		</label>
+
+		<button data-variant="primary">Submit</button>
+	</form>
+
+	<output class="result" data-part="result" hidden></output>
+
+	<script type="module">
+		import { $ } from '../common.js'
+
+		let form = $('@form')
+
+		// `novalidate` turns off the browser's own popups so we control the flow,
+		// but the constraints still drive checkValidity() and :user-invalid.
+		form.addEventListener('submit', e => {
+			e.preventDefault()
+			if (!form.checkValidity()) {
+				// Reveals every field's error styling and moves focus to the first
+				// bad one — all from the platform.
+				form.reportValidity()
+				return
+			}
+			let data = Object.fromEntries(new FormData(form))
+			let out = $('@result')
+			out.hidden = false
+			out.textContent = 'Valid! Submitting:\n' + JSON.stringify(data, null, 2)
+		})
+	</script>
+</body>
+</html>

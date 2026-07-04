@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Localized fragments · Examples</title>
+	<link rel="stylesheet" href="../common.css">
+	<link rel="icon" href="../icons.svg#icon-user">
+	<style>
+		body { max-width: 34rem; margin-inline: auto; padding: var(--space-4); }
+		.controls { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: end; margin-bottom: var(--space-4); }
+		.out { font-size: 1.25rem; padding: var(--space-3); border-radius: var(--radius); background: var(--surface); border: 0.1rem solid var(--line); }
+		.out + .out { margin-top: var(--space-2); }
+	</style>
+	<script type="module" src="i18n-fragments.js"></script>
+</head>
+<body>
+	<p><a href="index.html">← Examples</a></p>
+	<h1>Localized fragments</h1>
+	<p class="muted">The strings aren't in this page — they live in
+		<code>_greeting_en.html</code> and <code>_greeting_fr.html</code>, loaded
+		on demand for the chosen language. Each language has several greeting
+		variants, so <b>New greeting</b> picks one at random. The inbox line is
+		chosen by plural.</p>
+
+	<div class="controls">
+		<label>
+			<span>Language</span>
+			<select data-part="locale">
+				<option value="en">English</option>
+				<option value="fr">Français</option>
+			</select>
+		</label>
+		<label>
+			<span>Name</span>
+			<input data-part="name" value="Ada">
+		</label>
+		<label>
+			<span>Unread</span>
+			<input data-part="count" type="number" value="1" min="0" style="width: 6rem">
+		</label>
+		<button type="button" data-part="new" data-variant="ghost">New greeting</button>
+	</div>
+
+	<p class="out" data-part="greeting" lang="en"></p>
+	<p class="out" data-part="inbox" lang="en"></p>
+</body>
+</html>

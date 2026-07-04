@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Tasks · Vanilla Template</title>
+	<meta name="description" content="A local-first task list — the canonical example page.">
+
+	<link rel="stylesheet" href="common.css">
+	<link rel="stylesheet" href="index.css">
+	<link rel="icon" href="icons.svg#icon-check">
+	<link rel="manifest" href="manifest.json">
+	<script type="module" src="index.js"></script>
+</head>
+<body>
+
+<main class="app layer flow">
+
+	<header class="app-head">
+		<h1><x-icon name="check"></x-icon> Tasks</h1>
+		<p class="muted">Saved in this browser. Works offline. Open a second tab —
+			they stay in sync.</p>
+	</header>
+
+	<!-- Add. A plain <form>: Enter submits, `required` blocks empty. -->
+	<form class="add-form" data-part="add-form">
+		<input data-part="new-text" name="text" placeholder="Add a task…"
+			required autocomplete="off" aria-label="New task">
+		<button data-variant="primary" aria-label="Add">
+			<x-icon name="plus"></x-icon>
+		</button>
+	</form>
+
+	<!-- Filter. Each is a link to the same page with a query param — real URLs,
+	     no router. The active one is marked by JS reading the param. -->
+	<nav class="filters" data-part="filters">
+		<a href="?filter=all">All</a>
+		<a href="?filter=active">Active</a>
+		<a href="?filter=done">Done</a>
+	</nav>
+
+	<ul class="task-list flow" data-part="list"></ul>
+
+	<p class="empty" data-part="empty" hidden>Nothing here yet.</p>
+
+</main>
+
+<!-- Row shape for the reconciler. Cloned per task; [data-part] fields filled. -->
+<template data-part="row-template">
+	<li class="task">
+		<label class="task-check">
+			<input type="checkbox" data-part="done" aria-label="Done">
+		</label>
+		<span class="task-text" data-part="text"></span>
+		<button class="task-action" data-part="edit" data-variant="ghost" aria-label="Edit">
+			<x-icon name="edit"></x-icon>
+		</button>
+		<button class="task-action" data-part="remove" data-variant="ghost" aria-label="Delete">
+			<x-icon name="trash"></x-icon>
+		</button>
+	</li>
+</template>
+
+<!-- Edit dialog. Native <dialog>; submits with method="dialog". -->
+<dialog data-part="edit-dialog">
+	<form method="dialog" class="flow" data-part="edit-form">
+		<h2>Edit task</h2>
+		<label>
+			<span>Text</span>
+			<input name="text" data-part="edit-text" required>
+		</label>
+		<div class="row">
+			<button value="save" data-variant="primary">Save</button>
+			<button value="cancel" data-variant="ghost" formnovalidate>Cancel</button>
+		</div>
+	</form>
+</dialog>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Design system · Vanilla Template</title>
+
+	<!-- The gallery ships the SAME common.css the app does, so it can't drift
+	     from the real components. design-system.css is layout for this page
+	     only — it defines no component styles. -->
+	<link rel="stylesheet" href="common.css">
+	<link rel="stylesheet" href="design-system.css">
+	<script type="module" src="design-system.js"></script>
+</head>
+<body>
+
+<header class="ds-head layer">
+	<h1>Design system</h1>
+	<p class="muted">Every component, every state — rendered with the shipping
+		<code>common.css</code>. Change a token, watch it all move.</p>
+	<button data-part="theme-toggle" data-variant="ghost" type="button">
+		<x-icon name="moon"></x-icon> Theme
+	</button>
+</header>
+
+<nav class="ds-nav layer">
+	<a href="#colour">Colour</a>
+	<a href="#spacing">Spacing</a>
+	<a href="#type">Type</a>
+	<a href="#buttons">Buttons</a>
+	<a href="#forms">Forms</a>
+	<a href="#layers">Layers</a>
+	<a href="#dialog">Dialog &amp; disclosure</a>
+	<a href="#toasts">Toasts</a>
+	<a href="#icons">Icons</a>
+	<a href="#i18n">Localization</a>
+</nav>
+
+<main class="ds-main flow">
+
+	<!-- ── Colour ──────────────────────────────────────────────────────── -->
+	<section id="colour" class="ds-section flow">
+		<h2>Colour tokens</h2>
+		<div class="ds-swatches">
+			<div class="ds-swatch" style="background: var(--accent); color: var(--accent-ink)">accent</div>
+			<div class="ds-swatch" style="background: var(--info); color: white">info</div>
+			<div class="ds-swatch" style="background: var(--success); color: white">success</div>
+			<div class="ds-swatch" style="background: var(--warning); color: black">warning</div>
+			<div class="ds-swatch" style="background: var(--danger); color: white">danger</div>
+			<div class="ds-swatch" style="background: var(--ink); color: var(--surface)">ink</div>
+			<div class="ds-swatch" style="background: var(--muted); color: white">muted</div>
+			<div class="ds-swatch ds-swatch-line">line</div>
+		</div>
+	</section>
+
+	<!-- ── Spacing ─────────────────────────────────────────────────────── -->
+	<section id="spacing" class="ds-section flow">
+		<h2>Spacing</h2>
+		<p class="muted">One relative scale — every gap and pad is a
+			<code>--space-*</code> token, never a hardcoded length. The bar shows
+			each token's real size.</p>
+		<div class="ds-spaces flow">
+			<div class="row"><code>--space-1</code><span class="ds-bar" style="inline-size: var(--space-1)"></span><span class="muted">0.25rem</span></div>
+			<div class="row"><code>--space-2</code><span class="ds-bar" style="inline-size: var(--space-2)"></span><span class="muted">0.5rem</span></div>
+			<div class="row"><code>--space-3</code><span class="ds-bar" style="inline-size: var(--space-3)"></span><span class="muted">1rem</span></div>
+			<div class="row"><code>--space-4</code><span class="ds-bar" style="inline-size: var(--space-4)"></span><span class="muted">1.5rem</span></div>
+			<div class="row"><code>--space-5</code><span class="ds-bar" style="inline-size: var(--space-5)"></span><span class="muted">2.5rem</span></div>
+			<div class="row"><code>--space-6</code><span class="ds-bar" style="inline-size: var(--space-6)"></span><span class="muted">4em</span></div>
+			<div class="row"><code>--space-7</code><span class="ds-bar" style="inline-size: var(--space-7)"></span><span class="muted">6em</span></div>
+			<div class="row"><code>--space-8</code><span class="ds-bar" style="inline-size: var(--space-8)"></span><span class="muted">8em</span></div>
+			<div class="row"><code>--space-9</code><span class="ds-bar" style="inline-size: var(--space-9)"></span><span class="muted">12em</span></div>
+			<div class="row"><code>--space-10</code><span class="ds-bar" style="inline-size: var(--space-10)"></span><span class="muted">16em</span></div>
+		</div>
+		<p class="muted">Small steps (1–5) are <code>rem</code>, fixed to the root
+			size, for gaps and padding. Large steps (6–10) are <code>em</code>, so
+			big whitespace scales with the local text. The <code>.flow</code>
+			utility stacks content using these — its gap defaults to
+			<code>1em</code>, and a container sets <code>--flow-space</code> to any
+			of them to retune.</p>
+	</section>
+
+	<!-- ── Type ────────────────────────────────────────────────────────── -->
+	<section id="type" class="ds-section flow">
+		<h2>Type</h2>
+		<h1>Heading 1</h1>
+		<h2>Heading 2</h2>
+		<h3>Heading 3</h3>
+		<p>Body text sets the scale for everything else — sizes are relative, so
+			nudging the root font-size rescales the whole page. Here's a
+			<a href="#type">link</a> and some <code>inline code</code>.</p>
+		<p class="muted">Muted text, for captions and secondary notes.</p>
+	</section>
+
+	<!-- ── Buttons ─────────────────────────────────────────────────────── -->
+	<section id="buttons" class="ds-section flow">
+		<h2>Buttons</h2>
+		<p class="muted">One rule, variant chosen by <code>data-variant</code>.</p>
+		<div class="row wrap">
+			<button type="button">Default</button>
+			<button type="button" data-variant="primary">Primary</button>
+			<button type="button" data-variant="ghost">Ghost</button>
+			<button type="button" data-variant="danger">Danger</button>
+			<button type="button" disabled>Disabled</button>
+			<button type="button" data-variant="primary">
+				<x-icon name="plus"></x-icon> With icon
+			</button>
+		</div>
+	</section>
+
+	<!-- ── Forms ───────────────────────────────────────────────────────── -->
+	<section id="forms" class="ds-section flow">
+		<h2>Forms</h2>
+		<p class="muted">Labels wrap their control; errors show only after the
+			user touches a field (<code>:user-invalid</code>). Try submitting
+			empty.</p>
+		<form class="flow ds-form" data-part="demo-form">
+			<label>
+				<span>Name</span>
+				<input name="name" required placeholder="Ada Lovelace">
+			</label>
+			<label>
+				<span>Email</span>
+				<input name="email" type="email" required placeholder="ada@example.com">
+				<small class="field-error">Enter a valid email.</small>
+			</label>
+			<label>
+				<span>Role</span>
+				<select name="role">
+					<option>Engineer</option>
+					<option>Designer</option>
+					<option>Manager</option>
+				</select>
+			</label>
+			<fieldset>
+				<legend>Notifications</legend>
+				<label class="row"><input type="checkbox" name="n" checked> <span>Email</span></label>
+				<label class="row"><input type="checkbox" name="n"> <span>SMS</span></label>
+			</fieldset>
+			<label>
+				<span>Notes</span>
+				<textarea name="notes" placeholder="Anything else…"></textarea>
+			</label>
+			<div class="row">
+				<button type="submit" data-variant="primary">Submit</button>
+				<button type="reset" data-variant="ghost">Reset</button>
+			</div>
+		</form>
+	</section>
+
+	<!-- ── Layers ──────────────────────────────────────────────────────── -->
+	<section id="layers" class="ds-section flow">
+		<h2>Layers</h2>
+		<p class="muted">Each nested <code>.card</code> shifts tone one step on its
+			own — no per-depth class.</p>
+		<div class="card">
+			Layer 1
+			<div class="card">
+				Layer 2
+				<div class="card">
+					Layer 3
+					<div class="card">Layer 4</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── Dialog & disclosure ─────────────────────────────────────────── -->
+	<section id="dialog" class="ds-section flow">
+		<h2>Dialog &amp; disclosure</h2>
+		<div class="row wrap">
+			<button type="button" data-part="open-dialog" data-variant="primary">Open dialog</button>
+		</div>
+		<dialog data-part="dialog">
+			<form method="dialog" class="flow">
+				<h3>Native &lt;dialog&gt;</h3>
+				<p>Focus trap, Esc to close, and the backdrop all come from the
+					platform. <code>method="dialog"</code> closes on submit.</p>
+				<div class="row">
+					<button data-variant="primary">Got it</button>
+				</div>
+			</form>
+		</dialog>
+
+		<details>
+			<summary>A details/summary disclosure</summary>
+			<p>Open and closed is a state the browser owns. No JS.</p>
+		</details>
+	</section>
+
+	<!-- ── Toasts ──────────────────────────────────────────────────────── -->
+	<section id="toasts" class="ds-section flow">
+		<h2>Toasts</h2>
+		<p class="muted">Lifetime is a CSS animation. Hover one to pause it.</p>
+		<div class="row wrap">
+			<button type="button" data-toast="info">Info</button>
+			<button type="button" data-toast="success">Success</button>
+			<button type="button" data-toast="warning">Warning</button>
+			<button type="button" data-toast="error">Error</button>
+		</div>
+	</section>
+
+	<!-- ── Icons ───────────────────────────────────────────────────────── -->
+	<section id="icons" class="ds-section flow">
+		<h2>Icons</h2>
+		<p class="muted">One sprite, sized to the surrounding text, coloured by
+			<code>currentColor</code>.</p>
+		<div class="ds-icons" data-part="icon-grid"></div>
+		<p class="muted">By default a bigger icon has a proportionally bigger
+			stroke (left). Set <code>--icon-scale</code> to the size multiple and
+			the stroke stays visually the same weight at any size (right):</p>
+		<div class="row" style="gap: 2rem; align-items: baseline">
+			<span class="row" style="gap: 1rem; align-items: baseline">
+				<x-icon name="star" style="font-size: 1rem"></x-icon>
+				<x-icon name="star" style="font-size: 2rem"></x-icon>
+				<x-icon name="star" style="font-size: 3rem"></x-icon>
+			</span>
+			<span class="row" style="gap: 1rem; align-items: baseline">
+				<x-icon name="star" style="font-size: 1rem; --icon-scale: 1"></x-icon>
+				<x-icon name="star" style="font-size: 2rem; --icon-scale: 2"></x-icon>
+				<x-icon name="star" style="font-size: 3rem; --icon-scale: 3"></x-icon>
+			</span>
+		</div>
+	</section>
+
+	<!-- ── Localization ────────────────────────────────────────────────── -->
+	<section id="i18n" class="ds-section flow">
+		<h2>Localization</h2>
+		<p class="muted">A string is a <code>&lt;template&gt;</code> tagged with
+			<code>lang</code> and optional axes. Plural and language are picked by
+			specificity.</p>
+
+		<template data-name="cart" lang="en" data-plural="one">{count} item in your cart</template>
+		<template data-name="cart" lang="en" data-plural="other">{count} items in your cart</template>
+		<template data-name="cart" lang="fr" data-plural="one">{count} article dans le panier</template>
+		<template data-name="cart" lang="fr" data-plural="other">{count} articles dans le panier</template>
+
+		<div class="row wrap">
+			<label class="row"><span>Locale</span>
+				<select data-part="locale">
+					<option value="en">en</option>
+					<option value="fr">fr</option>
+				</select>
+			</label>
+			<label class="row"><span>Count</span>
+				<input data-part="count" type="number" value="1" min="0" style="width: 6rem">
+			</label>
+		</div>
+		<p class="card" data-part="cart-out" lang="en">1 item in your cart</p>
+	</section>
+
+</main>
+
+<footer class="ds-foot muted">
+	Same <code>common.css</code> as the app. If it looks right here, it looks
+	right there.
+</footer>
+
+</body>
+</html>

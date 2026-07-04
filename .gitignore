@@ -1,0 +1,14 @@
+# This template ships source as-is — there's nothing to build or install, so
+# there's very little to ignore. Mostly OS and editor cruft.
+
+.DS_Store
+Thumbs.db
+*.log
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# If you ever add dev-only tooling that isn't shipped, ignore its output here.
+node_modules/

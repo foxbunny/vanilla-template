@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Popover menu · Examples</title>
+	<link rel="stylesheet" href="../common.css">
+	<link rel="icon" href="../icons.svg#icon-settings">
+	<script type="module" src="../common.js"></script>
+	<style>
+		body { max-width: 34rem; margin-inline: auto; padding: var(--space-4); min-height: 80dvh; }
+		.bar { display: flex; justify-content: flex-end; }
+
+		/* The trigger names an anchor; the menu pins itself to that anchor. No JS
+		   positioning. */
+		.menu-trigger { anchor-name: --menu-trigger; }
+
+		.menu {
+			margin: 0;                          /* clear the UA centering for [popover] */
+			min-width: 12rem;
+			padding: var(--space-1);
+			border: 0.1rem solid var(--line);
+			border-radius: var(--radius);
+			background: oklch(var(--surface-l) var(--c) var(--h));
+			box-shadow: var(--shadow);
+		}
+
+		@supports (anchor-name: --x) {
+			.menu {
+				position-anchor: --menu-trigger;
+				inset: auto;
+				top: anchor(bottom);
+				right: anchor(right);
+				margin-top: var(--space-1);
+			}
+		}
+
+		.menu ul { list-style: none; margin: 0; padding: 0; }
+		.menu button {
+			all: unset; box-sizing: border-box;
+			display: flex; align-items: center; gap: var(--space-2);
+			width: 100%; padding: var(--space-2) var(--space-3);
+			border-radius: var(--radius); cursor: pointer;
+		}
+		.menu button:hover { background: var(--accent); color: var(--accent-ink); }
+		.menu hr { border: none; border-top: 0.1rem solid var(--line); margin: var(--space-1) 0; }
+
+		.picked { margin-top: var(--space-4); color: var(--muted); }
+	</style>
+</head>
+<body>
+	<p><a href="index.html">← Examples</a></p>
+	<h1>Popover menu</h1>
+	<p class="muted">The menu is a native <code>popover</code>: the button opens it,
+		and clicking away or pressing Esc closes it — no outside-click listener.
+		CSS anchor positioning pins it under the button; where that isn't
+		supported it falls back to the popover's default place.</p>
+
+	<div class="bar">
+		<button class="menu-trigger" popovertarget="menu" data-variant="primary">
+			<x-icon name="settings"></x-icon> Actions
+		</button>
+	</div>
+
+	<div id="menu" popover class="menu">
+		<ul data-part="menu">
+			<li><button type="button" data-action="Rename"><x-icon name="edit"></x-icon> Rename</button></li>
+			<li><button type="button" data-action="Duplicate"><x-icon name="plus"></x-icon> Duplicate</button></li>
+			<hr>
+			<li><button type="button" data-action="Delete"><x-icon name="trash"></x-icon> Delete</button></li>
+		</ul>
+	</div>
+
+	<p class="picked" data-part="picked">Pick an action…</p>
+
+	<script type="module">
+		import { $, delegate } from '../common.js'
+		// A menu item runs its action and closes the popover.
+		delegate('click', '[data-action]', (e, btn) => {
+			$('@picked').textContent = `You picked: ${btn.dataset.action}`
+			document.getElementById('menu').hidePopover()
+		})
+	</script>
+</body>
+</html>

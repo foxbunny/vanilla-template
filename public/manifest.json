@@ -1,0 +1,13 @@
+{
+	"name": "Vanilla Template",
+	"short_name": "Vanilla",
+	"description": "A local-first app built from the vanilla template.",
+	"start_url": ".",
+	"scope": ".",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#6c5b9b",
+	"icons": [
+		{ "src": "icons.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+	]
+}

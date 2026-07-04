@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Examples · Vanilla Template</title>
+	<link rel="stylesheet" href="../common.css">
+	<link rel="icon" href="../icons.svg#icon-star">
+	<script type="module" src="../common.js"></script>
+	<style>
+		body { max-width: 44rem; margin-inline: auto; padding: var(--space-4); }
+		.grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); }
+		a.card { display: grid; gap: var(--space-1); text-decoration: none; color: inherit; }
+		a.card:hover { border-color: var(--accent); }
+		a.card b { display: flex; align-items: center; gap: var(--space-2); }
+		a.card span { color: var(--muted); font-size: 0.9em; }
+	</style>
+</head>
+<body>
+	<h1>Examples</h1>
+	<p class="muted">One self-contained page per pattern. Each imports the same
+		<code>../common.js</code> and <code>../common.css</code> the app ships —
+		copy the one you need.</p>
+
+	<div class="grid" style="margin-top: var(--space-4)">
+		<a class="card" href="../index.html">
+			<b><x-icon name="check"></x-icon> Local-first list</b>
+			<span>IndexedDB + the keyed reconciler + cross-tab sync. The canonical page.</span>
+		</a>
+		<a class="card" href="data-table.html">
+			<b><x-icon name="menu"></x-icon> Data table</b>
+			<span>Sort and paginate a list through <code>renderList</code>.</span>
+		</a>
+		<a class="card" href="reorder.html">
+			<b><x-icon name="arrow-right"></x-icon> Drag to reorder</b>
+			<span>Pointer events + View Transitions for the animated move.</span>
+		</a>
+		<a class="card" href="popover-menu.html">
+			<b><x-icon name="settings"></x-icon> Popover menu</b>
+			<span>Native <code>popover</code> light-dismiss + CSS anchor positioning.</span>
+		</a>
+		<a class="card" href="form-validation.html">
+			<b><x-icon name="edit"></x-icon> Form validation</b>
+			<span>Constraint validation + <code>:user-invalid</code> + FormData.</span>
+		</a>
+		<a class="card" href="i18n-fragments.html">
+			<b><x-icon name="user"></x-icon> Localized fragments</b>
+			<span>Variant matrix + <code>_name_fr.html</code> loaded on demand.</span>
+		</a>
+	</div>
+</body>
+</html>
