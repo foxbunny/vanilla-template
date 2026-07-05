@@ -66,3 +66,5 @@ in `AGENTS.md` and let each tool's native rule file reference them.
 | [add-font](add-font.md) | A self-hosted web font added as a subset woff2 + `@font-face` (convert locally or from a Transfonter zip). |
 | [review](review.md) | Changed files checked against the house rules; violations reported, not fixed. |
 | [diary](diary.md) | One dated, append-only entry in `todo/diary.md` for a non-obvious thing learned. |
+| [up](up.md) | The app served by nginx in Docker at http://localhost:5000. |
+| [down](down.md) | The `/up` server stopped and its container removed. |

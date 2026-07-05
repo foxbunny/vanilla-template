@@ -6,4 +6,4 @@ the anchoring notes, house style, and the everyday workflows. Detailed
 per-language rules are in `rules/`; sharp edges already hit are in `todo/diary.md`.
 
 Claude Code also exposes the workflows as slash commands via `.claude/skills/`
-(`/new-page`, `/add-icon`, `/design`, `/review`, `/diary`).
+(`/new-page`, `/add-icon`, `/design`, `/review`, `/diary`, `/up`, `/down`).

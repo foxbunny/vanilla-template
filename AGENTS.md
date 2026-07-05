@@ -129,6 +129,8 @@ portable command body you follow (and, per tool, invoke by name). Reach for:
 - **`skills/add-font.md`** — add a self-hosted web font (subset woff2 + `@font-face`).
 - **`skills/review.md`** — check changed files against `rules/`; report, don't fix.
 - **`skills/diary.md`** — append a dated entry to `todo/diary.md`.
+- **`skills/up.md`** — start the app in nginx via Docker at localhost:5000.
+- **`skills/down.md`** — stop the Docker server `/up` started.
 
 These are the *invokable commands*; the *standing context* is this file plus
 `rules/`. A command references a rule; it never restates it. See
@@ -148,7 +150,8 @@ needs is in those plain-Markdown files. Each tool just wraps them its own way:
 
 - **Claude Code** reads `CLAUDE.md` (which points here) and picks up
   `.claude/skills/` as slash commands (`/new-page`, `/add-icon`, `/design`,
-  `/review`, `/diary`) — thin headers that each say "follow `skills/<name>.md`".
+  `/review`, `/diary`, `/up`, `/down`) — thin headers that each say "follow
+  `skills/<name>.md`".
 - **Any other agent** ignores `.claude/` and works from this file, `rules/`, and
   `skills/`. To give the commands a native trigger, wrap each `skills/<name>.md`
   body in your tool's command format — the body is reused verbatim, only the

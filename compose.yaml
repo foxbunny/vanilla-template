@@ -1,0 +1,13 @@
+# Dev server: `docker compose up`, then open http://localhost:5000
+#
+# This mounts public/ straight into nginx (read-only), so there's no image to
+# rebuild — edit a file, refresh the browser, done. Uses the stock nginx image
+# plus this repo's nginx.conf.
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - "5000:80"
+    volumes:
+      - ./public:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
