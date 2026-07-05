@@ -1,16 +1,11 @@
 // Wires the interactive demos on the gallery page. Everything it uses comes
 // from common.js — this file is only glue, no new component behaviour.
 
-import { $, delegate, showToast, renderVariant, setLocale } from './common.js'
+import { $, delegate, showToast, renderVariant, setLocale, mountShell } from './common.js'
 
-// ── Theme toggle ────────────────────────────────────────────────────────────
-// Flip <html data-theme>. common.css does the rest (and animates the change).
-$('@theme-toggle').addEventListener('click', () => {
-	let root = document.documentElement
-	let next = root.dataset.theme === 'dark' ? 'light' : 'dark'
-	root.dataset.theme = next
-	$('x-icon', $('@theme-toggle')).setAttribute('name', next === 'dark' ? 'sun' : 'moon')
-})
+// ── App shell ────────────────────────────────────────────────────────────────
+// The gallery wears the same shell as the app, so it wires it the same way.
+mountShell()
 
 // ── Toast buttons ───────────────────────────────────────────────────────────
 delegate('click', '[data-toast]', (e, btn) => {
@@ -30,13 +25,15 @@ $('@demo-form').addEventListener('submit', e => {
 
 // ── Icon grid ───────────────────────────────────────────────────────────────
 // List every symbol in the sprite so the gallery stays in step with icons.svg.
+// Sorted by name so a reader can scan the grid alphabetically, whatever order
+// the symbols happen to sit in the sprite.
 fetch('icons.svg')
 	.then(r => r.text())
 	.then(svg => {
 		let doc = new DOMParser().parseFromString(svg, 'image/svg+xml')
 		let grid = $('@icon-grid')
-		for (let symbol of doc.querySelectorAll('symbol')) {
-			let name = symbol.id.replace(/^icon-/, '')
+		let names = [...doc.querySelectorAll('symbol')].map(s => s.id.replace(/^icon-/, ''))
+		for (let name of names.sort()) {
 			let fig = document.createElement('figure')
 			let icon = document.createElement('x-icon')
 			icon.setAttribute('name', name)

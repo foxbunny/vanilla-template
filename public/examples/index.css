@@ -1,0 +1,22 @@
+/* Layout for the examples index ONLY. The page wears the shared app shell (top
+   bar + side nav, all from common.css); this file only styles the content inside
+   it — the card grid — so the page shows exactly what the app ships. */
+
+.muted { color: var(--muted); }
+
+/* The content stacks with the shared .flow pattern (in the HTML); here it only
+   keeps the measure readable. */
+.ex-main { max-width: 60rem; min-width: 0; }
+
+/* The tiles sit in the shared .card-grid-flush (common.css) so they line up at
+   equal height; this page only tunes how narrow a tile may get. */
+.card-grid-flush { --card-min: 14rem; }
+
+/* Each tile is a shared card whose whole surface is a link: a .card-head titles
+   it with its icon, a .card-body describes it. These rules only make the link
+   look like plain card text and light the border on hover. */
+a.card { text-decoration: none; color: var(--ink); }
+a.card:hover { border-color: var(--accent); }
+a.card .card-head { display: flex; align-items: center; gap: var(--space-2); }
+a.card .card-head x-icon { color: var(--accent); }
+a.card .card-body { color: var(--muted); font-size: 0.9em; }

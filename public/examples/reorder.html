@@ -7,38 +7,86 @@
 	<link rel="stylesheet" href="../common.css">
 	<link rel="icon" href="../icons.svg#icon-menu">
 	<style>
-		body { max-width: 34rem; margin-inline: auto; padding: var(--space-4); }
-		ul { list-style: none; padding: 0; --flow-space: var(--space-2); }   /* stacks via .flow */
-		li {
+		/* The page wears the shared app shell (common.css); this file only styles
+		   the content inside it. */
+		.content-inner { width: min(100%, 34rem); --flow-space: var(--space-4); }
+		.muted { color: var(--muted); }
+		/* The row list — scoped to the content so these bare ul/li rules don't
+		   reach the sidebar's own list. */
+		.content-inner ul { list-style: none; padding: 0; --flow-space: var(--space-2); }   /* stacks via .flow */
+		.content-inner li {
 			display: flex; align-items: center; gap: var(--space-3);
 			padding: var(--space-3); border: 0.1rem solid var(--line); border-radius: var(--radius);
 			background: var(--surface);
 		}
-		li[data-dragging] { border-color: var(--accent); box-shadow: var(--shadow); opacity: 0.9; }
+		.content-inner li[data-dragging] { border-color: var(--accent); box-shadow: var(--shadow); opacity: 0.9; }
 		.handle { cursor: grab; touch-action: none; color: var(--muted); }
-		li[data-dragging] .handle { cursor: grabbing; }
+		.content-inner li[data-dragging] .handle { cursor: grabbing; }
 		.label { flex: 1; }
 	</style>
 	<script type="module" src="reorder.js"></script>
 </head>
 <body>
-	<p><a href="index.html">← Examples</a></p>
-	<h1>Drag to reorder</h1>
-	<p class="muted">Drag the handle to move an item — pointer events, so it works
-		with touch too. The <b>Sort A–Z</b> button reorders through a View
-		Transition, so the rows slide to their new places.</p>
 
-	<button type="button" data-part="sort" data-variant="ghost" style="margin-bottom: var(--space-3)">
-		<x-icon name="arrow-right"></x-icon> Sort A–Z
-	</button>
+<!-- The shared app shell — top bar, side nav, drawer on narrow screens. The
+     Examples link is the current section. See ../index.html for the full notes. -->
+<div class="app-shell" data-part="shell" data-sidebar="closed">
 
-	<ul class="flow" data-part="list"></ul>
+	<header class="app-header">
+		<button class="icon-btn menu-toggle" data-variant="ghost" data-part="menu-toggle"
+			aria-label="Toggle menu">
+			<x-icon name="menu"></x-icon>
+		</button>
+		<a class="brand" href="../index.html">
+			<x-icon name="check"></x-icon>
+			<span>Vanilla</span>
+		</a>
+		<div class="header-actions">
+			<button class="icon-btn" data-variant="ghost" data-part="theme-toggle" aria-label="Toggle theme">
+				<x-icon name="moon"></x-icon>
+			</button>
+		</div>
+	</header>
 
-	<template data-part="row">
-		<li>
-			<span class="handle" data-part="handle"><x-icon name="menu"></x-icon></span>
-			<span class="label" data-part="label"></span>
-		</li>
-	</template>
+	<aside class="sidebar">
+		<nav class="side-nav" aria-label="Primary">
+			<ul class="flow">
+				<li><a href="../index.html"><x-icon name="check"></x-icon> Tasks</a></li>
+				<li><a href="index.html"><x-icon name="star"></x-icon> Examples</a></li>
+				<li><a href="../design-system.html"><x-icon name="heart"></x-icon> Design System</a></li>
+			</ul>
+		</nav>
+	</aside>
+
+	<div class="overlay" data-part="overlay"></div>
+
+	<main class="content">
+		<div class="content-inner flow">
+
+			<header class="flow">
+				<h1>Drag to reorder</h1>
+				<p class="muted">Drag the handle to move an item — pointer events, so it works
+					with touch too. The <b>Sort A–Z</b> button reorders through a View
+					Transition, so the rows slide to their new places.</p>
+			</header>
+
+			<button type="button" data-part="sort" data-variant="ghost">
+				<x-icon name="arrow-right"></x-icon> Sort A–Z
+			</button>
+
+			<ul class="flow" data-part="list"></ul>
+
+		</div>
+	</main>
+
+</div>
+
+<template data-part="row">
+	<li>
+		<span class="handle" data-part="handle"><x-icon name="menu"></x-icon></span>
+		<span class="label" data-part="label"></span>
+	</li>
+</template>
+
 </body>
 </html>

@@ -302,6 +302,31 @@ export let loadFragments = (name, l = locale) =>
 		})
 
 
+// ── App shell ─────────────────────────────────────────────────────────────────
+// Wire the shared shell chrome: the drawer (menu button, overlay, Esc) and the
+// light/dark toggle. Both are pure UI state — this only flips a data-* attribute
+// and lets common.css move and animate things. Call it once on a page that
+// renders the shell; it skips whatever parts a page leaves out.
+
+export let mountShell = () => {
+	let shell = $('@shell')
+	if (shell) {
+		let setDrawer = open => shell.dataset.sidebar = open ? 'open' : 'closed'
+		$('@menu-toggle')?.addEventListener('click', () => setDrawer(shell.dataset.sidebar !== 'open'))
+		$('@overlay')?.addEventListener('click', () => setDrawer(false))
+		document.addEventListener('keydown', e => { if (e.key === 'Escape') setDrawer(false) })
+	}
+
+	let themeBtn = $('@theme-toggle')
+	themeBtn?.addEventListener('click', () => {
+		let root = document.documentElement
+		let next = root.dataset.theme === 'dark' ? 'light' : 'dark'
+		root.dataset.theme = next
+		$('x-icon', themeBtn).setAttribute('name', next === 'dark' ? 'sun' : 'moon')
+	})
+}
+
+
 // fillParts is exported last because it's the shared primitive behind
 // renderTemplate, renderVariant, and any `update` you write for renderList.
 export { fillParts }

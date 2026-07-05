@@ -14,29 +14,54 @@
 </head>
 <body>
 
-<header class="ds-head layer">
-	<h1>Design system</h1>
-	<p class="muted">Every component, every state — rendered with the shipping
-		<code>common.css</code>. Change a token, watch it all move.</p>
-	<button data-part="theme-toggle" data-variant="ghost" type="button">
-		<x-icon name="moon"></x-icon> Theme
+<!-- The gallery is built with the very shell it documents (common.css). -->
+<div class="app-shell" data-part="shell" data-sidebar="closed">
+
+<header class="app-header">
+	<button class="icon-btn menu-toggle" data-variant="ghost" data-part="menu-toggle"
+		aria-label="Toggle menu">
+		<x-icon name="menu"></x-icon>
 	</button>
+	<a class="brand" href="index.html">
+		<x-icon name="check"></x-icon>
+		<span>Vanilla</span>
+	</a>
+	<div class="header-actions">
+		<button class="icon-btn" data-variant="ghost" data-part="theme-toggle" aria-label="Toggle theme">
+			<x-icon name="moon"></x-icon>
+		</button>
+	</div>
 </header>
 
-<nav class="ds-nav layer">
-	<a href="#colour">Colour</a>
-	<a href="#spacing">Spacing</a>
-	<a href="#type">Type</a>
-	<a href="#buttons">Buttons</a>
-	<a href="#forms">Forms</a>
-	<a href="#layers">Layers</a>
-	<a href="#dialog">Dialog &amp; disclosure</a>
-	<a href="#toasts">Toasts</a>
-	<a href="#icons">Icons</a>
-	<a href="#i18n">Localization</a>
-</nav>
+<aside class="sidebar">
+	<nav class="side-nav" aria-label="Sections">
+		<ul class="flow">
+			<li><a href="#colour">Colour</a></li>
+			<li><a href="#spacing">Spacing</a></li>
+			<li><a href="#type">Type</a></li>
+			<li><a href="#buttons">Buttons</a></li>
+			<li><a href="#shell">App shell</a></li>
+			<li><a href="#forms">Forms</a></li>
+			<li><a href="#cards">Cards</a></li>
+			<li><a href="#layers">Layers</a></li>
+			<li><a href="#dialog">Dialog &amp; disclosure</a></li>
+			<li><a href="#toasts">Toasts</a></li>
+			<li><a href="#icons">Icons</a></li>
+			<li><a href="#i18n">Localization</a></li>
+		</ul>
+	</nav>
+</aside>
 
-<main class="ds-main flow">
+<div class="overlay" data-part="overlay"></div>
+
+<main class="content ds-main flow">
+
+	<header class="flow">
+		<h1>Design system</h1>
+		<p class="muted">Every component, every state — rendered with the shipping
+			<code>common.css</code>. Change a token, watch it all move. This page is
+			built with the app shell it documents.</p>
+	</header>
 
 	<!-- ── Colour ──────────────────────────────────────────────────────── -->
 	<section id="colour" class="ds-section flow">
@@ -107,6 +132,62 @@
 		</div>
 	</section>
 
+	<!-- ── App shell ───────────────────────────────────────────────────── -->
+	<section id="shell" class="ds-section flow">
+		<h2>App shell</h2>
+		<p class="muted">The top bar and the side nav — chrome every page reuses.
+			The frame that stretches them into a full-height layout (and folds the
+			nav into a drawer on a narrow screen) is each page's own CSS; here the
+			pieces stand on their own.</p>
+
+		<h3>Header bar</h3>
+		<div class="ds-frame">
+			<header class="app-header">
+				<a class="brand" href="#shell">
+					<x-icon name="check"></x-icon>
+					<span>Vanilla</span>
+				</a>
+				<div class="header-actions">
+					<button class="icon-btn" data-variant="ghost" type="button" aria-label="Notifications">
+						<x-icon name="bell"></x-icon>
+					</button>
+					<button class="icon-btn" data-variant="ghost" type="button" aria-label="Toggle theme">
+						<x-icon name="moon"></x-icon>
+					</button>
+					<button class="icon-btn" data-variant="ghost" type="button" aria-label="Account">
+						<x-icon name="user"></x-icon>
+					</button>
+				</div>
+			</header>
+			<div class="ds-frame-body">The page content sits below the bar.</div>
+		</div>
+
+		<h3>Icon button</h3>
+		<p class="muted">A square, icon-only <code>.icon-btn</code> — the shared
+			button, only the shape changes. Takes the same variants.</p>
+		<div class="row wrap">
+			<button class="icon-btn" type="button" aria-label="Search"><x-icon name="search"></x-icon></button>
+			<button class="icon-btn" data-variant="ghost" type="button" aria-label="Settings"><x-icon name="settings"></x-icon></button>
+			<button class="icon-btn" data-variant="primary" type="button" aria-label="Add"><x-icon name="plus"></x-icon></button>
+		</div>
+
+		<h3>Side nav</h3>
+		<p class="muted">A <code>ul</code> of icon + label links. The current page
+			isn't a link — it's a plain <code>&lt;span&gt;</code>, filled like the
+			primary button. Being the one item you can't click marks it as current,
+			so it needs no <code>aria-current</code>.</p>
+		<div class="ds-frame ds-frame-nav">
+			<nav class="side-nav" aria-label="Example">
+				<ul class="flow">
+					<li><span><x-icon name="check"></x-icon> Tasks</span></li>
+					<li><a href="#shell"><x-icon name="star"></x-icon> Starred</a></li>
+					<li><a href="#shell"><x-icon name="bell"></x-icon> Notifications</a></li>
+					<li><a href="#shell"><x-icon name="heart"></x-icon> Components</a></li>
+				</ul>
+			</nav>
+		</div>
+	</section>
+
 	<!-- ── Forms ───────────────────────────────────────────────────────── -->
 	<section id="forms" class="ds-section flow">
 		<h2>Forms</h2>
@@ -147,18 +228,136 @@
 		</form>
 	</section>
 
+	<!-- ── Cards ───────────────────────────────────────────────────────── -->
+	<section id="cards" class="ds-section flow">
+		<h2>Cards</h2>
+		<p class="muted">A framed surface. The frame adds no padding — build the
+			inside from optional parts: a full-width <code>.card-head</code> (one
+			tone deeper, with a bottom line), a <code>.card-media</code> that runs
+			edge to edge, and a padded <code>.card-body</code>. Mix them as the
+			content needs.</p>
+
+		<!-- Anatomy: the optional parts, laid out in a plain responsive grid. -->
+		<h3>Anatomy</h3>
+		<div class="card-grid">
+
+			<!-- Header + body: the standard two-part card. -->
+			<article class="card">
+				<header class="card-head">Header</header>
+				<div class="card-body flow">
+					<p>A header bar over a padded body. The header runs the full width
+						of the card and sits one tone deeper, split off by a line.</p>
+					<div class="row"><button type="button" data-variant="primary">Action</button></div>
+				</div>
+			</article>
+
+			<!-- Body only: no header, just padded content. -->
+			<article class="card">
+				<div class="card-body flow">
+					<strong>No header</strong>
+					<p>Sometimes a card is just a padded box. Drop the header and keep
+						the <code>.card-body</code>.</p>
+				</div>
+			</article>
+
+			<!-- Media on top: the image is full-bleed (no padding); text below sits
+			     in a body. -->
+			<article class="card">
+				<div class="card-media ds-card-photo" role="img" aria-label="Placeholder image"></div>
+				<div class="card-body flow">
+					<strong>Image on top</strong>
+					<p>The picture fills the card corner to corner — no padding around
+						it — and the body pads only the text.</p>
+				</div>
+			</article>
+
+			<!-- All three: header, then a full-bleed image, then a body. -->
+			<article class="card">
+				<header class="card-head">Header</header>
+				<div class="card-media ds-card-photo" role="img" aria-label="Placeholder image"></div>
+				<div class="card-body">
+					<p>Header, full-bleed media, and body stacked together.</p>
+				</div>
+			</article>
+
+			<!-- Media only: an image card with no text at all. -->
+			<article class="card">
+				<div class="card-media ds-card-photo" role="img" aria-label="Placeholder image"></div>
+			</article>
+
+			<!-- One element carrying both classes — the plain text-card shorthand. -->
+			<p class="card card-body">A one-element text card: <code>.card</code> for
+				the frame, <code>.card-body</code> for the padding.</p>
+
+		</div>
+
+		<!-- Layouts: the four shared containers for a set of cards. Each demo uses
+		     the same cards with uneven text so the layout differences show. -->
+		<h3>Layouts</h3>
+		<p class="muted">Four first-class containers for a set of cards, all from
+			<code>common.css</code>. Each takes a <code>--card-gap</code> and a
+			<code>--card-min</code> knob.</p>
+
+		<p class="muted"><code>.card-carousel</code> — one row that scrolls sideways
+			and snaps to each card.</p>
+		<div class="card-carousel">
+			<article class="card"><header class="card-head">One</header><div class="card-body">Scrolls sideways.</div></article>
+			<article class="card"><header class="card-head">Two</header><div class="card-body">Snaps to each card as you drag.</div></article>
+			<article class="card"><header class="card-head">Three</header><div class="card-body">Cards keep their width and run off-screen.</div></article>
+			<article class="card"><header class="card-head">Four</header><div class="card-body">Scroll to reach the rest.</div></article>
+			<article class="card"><header class="card-head">Five</header><div class="card-body">Last one.</div></article>
+		</div>
+
+		<p class="muted"><code>.card-grid</code> — wraps into as many columns as fit;
+			each card keeps its natural height, so the bottoms are ragged.</p>
+		<div class="card-grid">
+			<article class="card"><header class="card-head">One</header><div class="card-body">A line.</div></article>
+			<article class="card"><header class="card-head">Two</header><div class="card-body">More text here, so this card runs a couple of lines taller than the one-liners next to it.</div></article>
+			<article class="card"><header class="card-head">Three</header><div class="card-body">A line.</div></article>
+			<article class="card"><header class="card-head">Four</header><div class="card-body">A middling amount of text — a bit more than one line, a bit less than the tall one.</div></article>
+			<article class="card"><header class="card-head">Five</header><div class="card-body">A line.</div></article>
+			<article class="card"><header class="card-head">Six</header><div class="card-body">The tallest of the set, with enough words to wrap across several lines and stretch this card well past the rest of them in the row.</div></article>
+		</div>
+
+		<p class="muted"><code>.card-grid-flush</code> — the same grid, but every card
+			in a row matches the tallest, so their bottoms line up flush.</p>
+		<div class="card-grid-flush">
+			<article class="card"><header class="card-head">One</header><div class="card-body">A line.</div></article>
+			<article class="card"><header class="card-head">Two</header><div class="card-body">More text here, so this card runs a couple of lines taller than the one-liners next to it.</div></article>
+			<article class="card"><header class="card-head">Three</header><div class="card-body">A line.</div></article>
+			<article class="card"><header class="card-head">Four</header><div class="card-body">A middling amount of text — a bit more than one line, a bit less than the tall one.</div></article>
+			<article class="card"><header class="card-head">Five</header><div class="card-body">A line.</div></article>
+			<article class="card"><header class="card-head">Six</header><div class="card-body">The tallest of the set, with enough words to wrap across several lines and stretch this card well past the rest of them in the row.</div></article>
+		</div>
+
+		<p class="muted"><code>.card-stack</code> — a single vertical column, one card
+			under the next.</p>
+		<div class="card-stack">
+			<article class="card"><header class="card-head">First</header><div class="card-body">Stacked straight down the page.</div></article>
+			<article class="card"><header class="card-head">Second</header><div class="card-body">Full width, one under the last.</div></article>
+			<article class="card"><header class="card-head">Third</header><div class="card-body">Good for a narrow column or a feed.</div></article>
+		</div>
+	</section>
+
 	<!-- ── Layers ──────────────────────────────────────────────────────── -->
 	<section id="layers" class="ds-section flow">
 		<h2>Layers</h2>
 		<p class="muted">Each nested <code>.card</code> shifts tone one step on its
-			own — no per-depth class.</p>
+			own — no per-depth class. Padding is <code>.card-body</code>; the tone
+			step is automatic.</p>
 		<div class="card">
-			Layer 1
-			<div class="card">
-				Layer 2
+			<div class="card-body">
+				Layer 1
 				<div class="card">
-					Layer 3
-					<div class="card">Layer 4</div>
+					<div class="card-body">
+						Layer 2
+						<div class="card">
+							<div class="card-body">
+								Layer 3
+								<div class="card"><div class="card-body">Layer 4</div></div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -245,15 +444,17 @@
 				<input data-part="count" type="number" value="1" min="0" style="width: 6rem">
 			</label>
 		</div>
-		<p class="card" data-part="cart-out" lang="en">1 item in your cart</p>
+		<p class="card card-body" data-part="cart-out" lang="en">1 item in your cart</p>
 	</section>
+
+	<footer class="ds-foot muted">
+		Same <code>common.css</code> as the app. If it looks right here, it looks
+		right there.
+	</footer>
 
 </main>
 
-<footer class="ds-foot muted">
-	Same <code>common.css</code> as the app. If it looks right here, it looks
-	right there.
-</footer>
+</div>
 
 </body>
 </html>

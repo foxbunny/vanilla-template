@@ -1,4 +1,7 @@
-import { $, $$, delegate, renderTemplate, renderList, fillParts } from '../common.js'
+import { $, $$, delegate, renderTemplate, renderList, fillParts, mountShell } from '../common.js'
+
+// Wire the shared shell chrome (drawer + theme toggle).
+mountShell()
 
 // Some rows to show. In a real page this comes from idb or the network.
 let people = [

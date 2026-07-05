@@ -2,13 +2,16 @@
 // It shows the whole loop: store in IndexedDB, render with the keyed
 // reconciler, update on every change (including from another tab).
 
-import { $, delegate, renderTemplate, renderList, fillParts, showToast } from './common.js'
+import { $, delegate, renderTemplate, renderList, fillParts, showToast, mountShell } from './common.js'
 import { openDB } from './lib/idb.js'
 
 // Register the offline cache. Optional — remove if the page needn't work on a
 // plane.
 if ('serviceWorker' in navigator)
 	navigator.serviceWorker.register('service-worker.js').catch(() => {})
+
+// Wire the shared shell chrome (drawer + theme toggle).
+mountShell()
 
 // ── Data ────────────────────────────────────────────────────────────────────
 let db = openDB('tasks', [
@@ -25,7 +28,7 @@ let matches = task =>
 	filter === 'done'   ? task.done  : true
 
 // Mark the active filter link.
-for (let a of $('@filters').children)
+for (let a of $('@filters').querySelectorAll('a'))
 	a.setAttribute('aria-current', a.search === `?filter=${filter}` ? 'page' : 'false')
 
 // ── Render ────────────────────────────────────────────────────────────────────

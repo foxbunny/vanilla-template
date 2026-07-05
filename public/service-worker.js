@@ -2,7 +2,7 @@
 // old cache is thrown away and everything re-fetched once. That's the whole
 // update story; no build tool stamps hashes for you.
 
-let CACHE = 'app-v1'
+let CACHE = 'app-v10'
 
 // The shell to have on hand for an offline first paint. Add a page's files here
 // when you want it to work on a plane.

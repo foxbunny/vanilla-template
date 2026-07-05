@@ -1,8 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
 	<!-- A sprite of stroke icons on a 24x24 grid. Colour and stroke width come
-	     from common.css (currentColor + --icon-scale), so paths carry geometry
-	     only. Use one with <x-icon name="plus">; add one with a new <symbol
-	     id="icon-NAME">. -->
+	     from common.css (currentColor plus the icon-scale custom property), so
+	     paths carry geometry only. Use one with <x-icon name="plus">; add one
+	     with a new <symbol id="icon-NAME">. An XML comment can't contain a
+	     double hyphen, so don't write the property with its leading dashes
+	     here — the gallery parses this file as strict XML and would choke. -->
 
 	<symbol id="icon-plus" viewBox="0 0 24 24">
 		<line x1="12" y1="5" x2="12" y2="19"/>

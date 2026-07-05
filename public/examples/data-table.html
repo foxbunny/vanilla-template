@@ -7,7 +7,10 @@
 	<link rel="stylesheet" href="../common.css">
 	<link rel="icon" href="../icons.svg#icon-menu">
 	<style>
-		body { max-width: 44rem; margin-inline: auto; padding: var(--space-4); }
+		/* The page wears the shared app shell (common.css); this file only styles
+		   the content inside it. */
+		.content-inner { width: min(100%, 44rem); --flow-space: var(--space-4); }
+		.muted { color: var(--muted); }
 		table { width: 100%; border-collapse: collapse; }
 		th, td { text-align: left; padding: var(--space-2) var(--space-3); border-bottom: 0.1rem solid var(--line); }
 		th button {
@@ -18,37 +21,80 @@
 		th[data-sort] button::after { content: '↕'; color: var(--muted); }
 		th[data-sort="asc"] button::after { content: '↑'; color: var(--accent); }
 		th[data-sort="desc"] button::after { content: '↓'; color: var(--accent); }
-		.controls { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-3); }
+		.controls { display: flex; align-items: center; gap: var(--space-3); }
 		.controls .grow { flex: 1; }
 	</style>
 	<script type="module" src="data-table.js"></script>
 </head>
 <body>
-	<p><a href="index.html">← Examples</a></p>
-	<h1>Data table</h1>
-	<p class="muted">Sorting and paging are plain data operations; the same
-		<code>renderList</code> reconciler paints the rows, reusing them as the
-		view changes.</p>
 
-	<table>
-		<thead>
-			<tr data-part="head">
-				<th data-sort="asc" data-key="name"><button type="button">Name</button></th>
-				<th data-key="role"><button type="button">Role</button></th>
-				<th data-key="age"><button type="button">Age</button></th>
-			</tr>
-		</thead>
-		<tbody data-part="rows"></tbody>
-	</table>
+<!-- The shared app shell — top bar, side nav, drawer on narrow screens. The
+     Examples link is the current section. See ../index.html for the full notes. -->
+<div class="app-shell" data-part="shell" data-sidebar="closed">
 
-	<div class="controls">
-		<button type="button" data-part="prev" data-variant="ghost">Prev</button>
-		<span class="grow muted" data-part="status"></span>
-		<button type="button" data-part="next" data-variant="ghost">Next</button>
-	</div>
+	<header class="app-header">
+		<button class="icon-btn menu-toggle" data-variant="ghost" data-part="menu-toggle"
+			aria-label="Toggle menu">
+			<x-icon name="menu"></x-icon>
+		</button>
+		<a class="brand" href="../index.html">
+			<x-icon name="check"></x-icon>
+			<span>Vanilla</span>
+		</a>
+		<div class="header-actions">
+			<button class="icon-btn" data-variant="ghost" data-part="theme-toggle" aria-label="Toggle theme">
+				<x-icon name="moon"></x-icon>
+			</button>
+		</div>
+	</header>
 
-	<template data-part="row">
-		<tr><td data-part="name"></td><td data-part="role"></td><td data-part="age"></td></tr>
-	</template>
+	<aside class="sidebar">
+		<nav class="side-nav" aria-label="Primary">
+			<ul class="flow">
+				<li><a href="../index.html"><x-icon name="check"></x-icon> Tasks</a></li>
+				<li><a href="index.html"><x-icon name="star"></x-icon> Examples</a></li>
+				<li><a href="../design-system.html"><x-icon name="heart"></x-icon> Design System</a></li>
+			</ul>
+		</nav>
+	</aside>
+
+	<div class="overlay" data-part="overlay"></div>
+
+	<main class="content">
+		<div class="content-inner flow">
+
+			<header class="flow">
+				<h1>Data table</h1>
+				<p class="muted">Sorting and paging are plain data operations; the same
+					<code>renderList</code> reconciler paints the rows, reusing them as the
+					view changes.</p>
+			</header>
+
+			<table>
+				<thead>
+					<tr data-part="head">
+						<th data-sort="asc" data-key="name"><button type="button">Name</button></th>
+						<th data-key="role"><button type="button">Role</button></th>
+						<th data-key="age"><button type="button">Age</button></th>
+					</tr>
+				</thead>
+				<tbody data-part="rows"></tbody>
+			</table>
+
+			<div class="controls">
+				<button type="button" data-part="prev" data-variant="ghost">Prev</button>
+				<span class="grow muted" data-part="status"></span>
+				<button type="button" data-part="next" data-variant="ghost">Next</button>
+			</div>
+
+		</div>
+	</main>
+
+</div>
+
+<template data-part="row">
+	<tr><td data-part="name"></td><td data-part="role"></td><td data-part="age"></td></tr>
+</template>
+
 </body>
 </html>

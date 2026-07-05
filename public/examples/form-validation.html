@@ -8,7 +8,10 @@
 	<link rel="icon" href="../icons.svg#icon-edit">
 	<script type="module" src="../common.js"></script>
 	<style>
-		body { max-width: 32rem; margin-inline: auto; padding: var(--space-4); }
+		/* The page wears the shared app shell (common.css); this file only styles
+		   the content inside it. */
+		.content-inner { width: min(100%, 32rem); --flow-space: var(--space-4); }
+		.muted { color: var(--muted); }
 		form { --flow-space: var(--space-4); }   /* stacks via the shared .flow class */
 		output.result {
 			padding: var(--space-3); border-radius: var(--radius);
@@ -19,64 +22,110 @@
 	</style>
 </head>
 <body>
-	<p><a href="index.html">← Examples</a></p>
-	<h1>Form validation</h1>
-	<p class="muted">The rules live on the inputs (<code>required</code>,
-		<code>type</code>, <code>pattern</code>, <code>minlength</code>). The
-		browser enforces them; <code>:user-invalid</code> only reddens a field
-		after the user has touched it. JavaScript just reads the result.</p>
 
-	<form class="flow" data-part="form" novalidate>
-		<label>
-			<span>Name</span>
-			<input name="name" required minlength="2" placeholder="Ada Lovelace"
-				autocomplete="name">
-			<small class="field-error">At least two characters.</small>
-		</label>
+<!-- The shared app shell — top bar, side nav, drawer on narrow screens. The
+     Examples link is the current section. See ../index.html for the full notes. -->
+<div class="app-shell" data-part="shell" data-sidebar="closed">
 
-		<label>
-			<span>Email</span>
-			<input name="email" type="email" required placeholder="ada@example.com"
-				autocomplete="email">
-			<small class="field-error">Enter a valid email address.</small>
-		</label>
+	<header class="app-header">
+		<button class="icon-btn menu-toggle" data-variant="ghost" data-part="menu-toggle"
+			aria-label="Toggle menu">
+			<x-icon name="menu"></x-icon>
+		</button>
+		<a class="brand" href="../index.html">
+			<x-icon name="check"></x-icon>
+			<span>Vanilla</span>
+		</a>
+		<div class="header-actions">
+			<button class="icon-btn" data-variant="ghost" data-part="theme-toggle" aria-label="Toggle theme">
+				<x-icon name="moon"></x-icon>
+			</button>
+		</div>
+	</header>
 
-		<label>
-			<span>Age</span>
-			<input name="age" type="number" min="18" max="120" required placeholder="18+">
-			<small class="field-error">Must be 18 or older.</small>
-		</label>
+	<aside class="sidebar">
+		<nav class="side-nav" aria-label="Primary">
+			<ul class="flow">
+				<li><a href="../index.html"><x-icon name="check"></x-icon> Tasks</a></li>
+				<li><a href="index.html"><x-icon name="star"></x-icon> Examples</a></li>
+				<li><a href="../design-system.html"><x-icon name="heart"></x-icon> Design System</a></li>
+			</ul>
+		</nav>
+	</aside>
 
-		<label>
-			<span>Website (optional)</span>
-			<input name="site" type="url" placeholder="https://…">
-		</label>
+	<div class="overlay" data-part="overlay"></div>
 
-		<button data-variant="primary">Submit</button>
-	</form>
+	<main class="content">
+		<div class="content-inner flow">
 
-	<output class="result" data-part="result" hidden></output>
+			<header class="flow">
+				<h1>Form validation</h1>
+				<p class="muted">The rules live on the inputs (<code>required</code>,
+					<code>type</code>, <code>pattern</code>, <code>minlength</code>). The
+					browser enforces them; <code>:user-invalid</code> only reddens a field
+					after the user has touched it. JavaScript just reads the result.</p>
+			</header>
 
-	<script type="module">
-		import { $ } from '../common.js'
+			<form class="flow" data-part="form" novalidate>
+				<label>
+					<span>Name</span>
+					<input name="name" required minlength="2" placeholder="Ada Lovelace"
+						autocomplete="name">
+					<small class="field-error">At least two characters.</small>
+				</label>
 
-		let form = $('@form')
+				<label>
+					<span>Email</span>
+					<input name="email" type="email" required placeholder="ada@example.com"
+						autocomplete="email">
+					<small class="field-error">Enter a valid email address.</small>
+				</label>
 
-		// `novalidate` turns off the browser's own popups so we control the flow,
-		// but the constraints still drive checkValidity() and :user-invalid.
-		form.addEventListener('submit', e => {
-			e.preventDefault()
-			if (!form.checkValidity()) {
-				// Reveals every field's error styling and moves focus to the first
-				// bad one — all from the platform.
-				form.reportValidity()
-				return
-			}
-			let data = Object.fromEntries(new FormData(form))
-			let out = $('@result')
-			out.hidden = false
-			out.textContent = 'Valid! Submitting:\n' + JSON.stringify(data, null, 2)
-		})
-	</script>
+				<label>
+					<span>Age</span>
+					<input name="age" type="number" min="18" max="120" required placeholder="18+">
+					<small class="field-error">Must be 18 or older.</small>
+				</label>
+
+				<label>
+					<span>Website (optional)</span>
+					<input name="site" type="url" placeholder="https://…">
+				</label>
+
+				<button data-variant="primary">Submit</button>
+			</form>
+
+			<output class="result" data-part="result" hidden></output>
+
+		</div>
+	</main>
+
+</div>
+
+<script type="module">
+	import { $, mountShell } from '../common.js'
+
+	// Wire the shared shell chrome (drawer + theme toggle).
+	mountShell()
+
+	let form = $('@form')
+
+	// `novalidate` turns off the browser's own popups so we control the flow,
+	// but the constraints still drive checkValidity() and :user-invalid.
+	form.addEventListener('submit', e => {
+		e.preventDefault()
+		if (!form.checkValidity()) {
+			// Reveals every field's error styling and moves focus to the first
+			// bad one — all from the platform.
+			form.reportValidity()
+			return
+		}
+		let data = Object.fromEntries(new FormData(form))
+		let out = $('@result')
+		out.hidden = false
+		out.textContent = 'Valid! Submitting:\n' + JSON.stringify(data, null, 2)
+	})
+</script>
+
 </body>
 </html>

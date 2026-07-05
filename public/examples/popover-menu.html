@@ -8,7 +8,10 @@
 	<link rel="icon" href="../icons.svg#icon-settings">
 	<script type="module" src="../common.js"></script>
 	<style>
-		body { max-width: 34rem; margin-inline: auto; padding: var(--space-4); min-height: 80dvh; }
+		/* The page wears the shared app shell (common.css); this file only styles
+		   the content inside it. */
+		.content-inner { width: min(100%, 34rem); --flow-space: var(--space-4); }
+		.muted { color: var(--muted); }
 		.bar { display: flex; justify-content: flex-end; }
 
 		/* The trigger names an anchor; the menu pins itself to that anchor. No JS
@@ -45,41 +48,88 @@
 		.menu button:hover { background: var(--accent); color: var(--accent-ink); }
 		.menu hr { border: none; border-top: 0.1rem solid var(--line); margin: var(--space-1) 0; }
 
-		.picked { margin-top: var(--space-4); color: var(--muted); }
+		.picked { color: var(--muted); }
 	</style>
 </head>
 <body>
-	<p><a href="index.html">← Examples</a></p>
-	<h1>Popover menu</h1>
-	<p class="muted">The menu is a native <code>popover</code>: the button opens it,
-		and clicking away or pressing Esc closes it — no outside-click listener.
-		CSS anchor positioning pins it under the button; where that isn't
-		supported it falls back to the popover's default place.</p>
 
-	<div class="bar">
-		<button class="menu-trigger" popovertarget="menu" data-variant="primary">
-			<x-icon name="settings"></x-icon> Actions
+<!-- The shared app shell — top bar, side nav, drawer on narrow screens. The
+     Examples link is the current section. See ../index.html for the full notes. -->
+<div class="app-shell" data-part="shell" data-sidebar="closed">
+
+	<header class="app-header">
+		<button class="icon-btn menu-toggle" data-variant="ghost" data-part="menu-toggle"
+			aria-label="Toggle menu">
+			<x-icon name="menu"></x-icon>
 		</button>
-	</div>
+		<a class="brand" href="../index.html">
+			<x-icon name="check"></x-icon>
+			<span>Vanilla</span>
+		</a>
+		<div class="header-actions">
+			<button class="icon-btn" data-variant="ghost" data-part="theme-toggle" aria-label="Toggle theme">
+				<x-icon name="moon"></x-icon>
+			</button>
+		</div>
+	</header>
 
-	<div id="menu" popover class="menu">
-		<ul data-part="menu">
-			<li><button type="button" data-action="Rename"><x-icon name="edit"></x-icon> Rename</button></li>
-			<li><button type="button" data-action="Duplicate"><x-icon name="plus"></x-icon> Duplicate</button></li>
-			<hr>
-			<li><button type="button" data-action="Delete"><x-icon name="trash"></x-icon> Delete</button></li>
-		</ul>
-	</div>
+	<aside class="sidebar">
+		<nav class="side-nav" aria-label="Primary">
+			<ul class="flow">
+				<li><a href="../index.html"><x-icon name="check"></x-icon> Tasks</a></li>
+				<li><a href="index.html"><x-icon name="star"></x-icon> Examples</a></li>
+				<li><a href="../design-system.html"><x-icon name="heart"></x-icon> Design System</a></li>
+			</ul>
+		</nav>
+	</aside>
 
-	<p class="picked" data-part="picked">Pick an action…</p>
+	<div class="overlay" data-part="overlay"></div>
 
-	<script type="module">
-		import { $, delegate } from '../common.js'
-		// A menu item runs its action and closes the popover.
-		delegate('click', '[data-action]', (e, btn) => {
-			$('@picked').textContent = `You picked: ${btn.dataset.action}`
-			document.getElementById('menu').hidePopover()
-		})
-	</script>
+	<main class="content">
+		<div class="content-inner flow">
+
+			<header class="flow">
+				<h1>Popover menu</h1>
+				<p class="muted">The menu is a native <code>popover</code>: the button opens it,
+					and clicking away or pressing Esc closes it — no outside-click listener.
+					CSS anchor positioning pins it under the button; where that isn't
+					supported it falls back to the popover's default place.</p>
+			</header>
+
+			<div class="bar">
+				<button class="menu-trigger" popovertarget="menu" data-variant="primary">
+					<x-icon name="settings"></x-icon> Actions
+				</button>
+			</div>
+
+			<div id="menu" popover class="menu">
+				<ul data-part="menu">
+					<li><button type="button" data-action="Rename"><x-icon name="edit"></x-icon> Rename</button></li>
+					<li><button type="button" data-action="Duplicate"><x-icon name="plus"></x-icon> Duplicate</button></li>
+					<hr>
+					<li><button type="button" data-action="Delete"><x-icon name="trash"></x-icon> Delete</button></li>
+				</ul>
+			</div>
+
+			<p class="picked" data-part="picked">Pick an action…</p>
+
+		</div>
+	</main>
+
+</div>
+
+<script type="module">
+	import { $, delegate, mountShell } from '../common.js'
+
+	// Wire the shared shell chrome (drawer + theme toggle).
+	mountShell()
+
+	// A menu item runs its action and closes the popover.
+	delegate('click', '[data-action]', (e, btn) => {
+		$('@picked').textContent = `You picked: ${btn.dataset.action}`
+		document.getElementById('menu').hidePopover()
+	})
+</script>
+
 </body>
 </html>

@@ -1,4 +1,7 @@
-import { $, delegate, renderTemplate, renderList, fillParts } from '../common.js'
+import { $, delegate, renderTemplate, renderList, fillParts, mountShell } from '../common.js'
+
+// Wire the shared shell chrome (drawer + theme toggle).
+mountShell()
 
 let items = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn']
 	.map((label, id) => ({ id, label }))

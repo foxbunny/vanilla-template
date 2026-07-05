@@ -10,6 +10,11 @@
   in `rem`/`em` means one font-size change rescales everything.
 - **Breakpoints are about content, not devices.** `@media (width < 48rem)` when
   the layout needs it, not `768px` for "tablet".
+- **Write breakpoints with the range syntax** (`width < 48rem`, `width >= 48rem`),
+  never `max-width`/`min-width`. The range form reads as the comparison it is, and
+  its bound is exclusive: `width < 48rem` and `width >= 48rem` split cleanly at
+  48rem with no overlap, where `max-width: 48rem` quietly includes 48rem and can
+  match the same width as a `min-width: 48rem` beside it.
 
 ## What CSS owns
 
@@ -37,6 +42,14 @@
   between them — a prose passage, a page section, a form, a card's contents. Don't
   sprinkle per-element margins, and **don't hand-roll another
   flex-column-with-gap** — that's the inconsistency `.flow` exists to prevent.
+  This bans the *ad hoc* case: a one-off `display: flex; flex-direction: column;
+  gap` written inline to stack some elements. It does **not** ban a named layout
+  primitive that happens to be built the same way — e.g. `.card-stack`, one of the
+  card-layout family (`.card-grid`, `.card-carousel`, `.card-stack`) that all take
+  a shared `--card-gap` knob. That's a deliberate, reusable style with its own
+  name and job; it only *resembles* `.flow` today. `.flow` spaces prose and form
+  fields by the text size; `.card-stack` stacks cards by the card gap. Different
+  intent, so keep them separate even when the declarations line up.
 - The gap defaults to `1em`, so prose tracks the text size. Retune one container by
   setting `--flow-space` to a `--space-*` token:
   `<ul class="flow" style="--flow-space: var(--space-1)">` for a dense list,

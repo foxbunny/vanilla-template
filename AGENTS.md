@@ -118,6 +118,20 @@ Structure is strict; syntax is relaxed. `async/await`, `===`, `const`/`let`, tab
 for indent. Text that a translator could translate lives in HTML, never in a JS
 string. Match the surrounding code — it should read like one person wrote it.
 
+**`design-system.html` is the authoritative catalog of UI patterns.** It renders
+every shared component with the shipping `common.css`, so it — not any one page —
+is what "the patterns" means. When you check whether a page follows the patterns,
+or need the right markup for a component (the app shell, a card, a button, a
+form), read the gallery and copy from it. If a page and the gallery disagree, the
+gallery wins and the page is the thing to fix.
+
+**A new shared visual element is built in the design system first, then applied to
+the page.** Anything more than one page will reuse — a header, a sidebar, a card
+style, a button shape — gets designed and eyeballed in `design-system.html` before
+it lands in a real page. Build it in the gallery, get it right there, then reuse
+that pattern on the page; the page never invents shared chrome on its own. (This is
+what `skills/design.md` walks through.)
+
 ## Everyday workflows
 
 The multi-step jobs are written up once, agent-neutrally, in `skills/` — each is a

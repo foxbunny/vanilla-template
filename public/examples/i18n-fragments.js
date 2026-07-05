@@ -1,4 +1,7 @@
-import { $, setLocale, getLocale, renderVariant, loadFragments } from '../common.js'
+import { $, setLocale, getLocale, renderVariant, loadFragments, mountShell } from '../common.js'
+
+// Wire the shared shell chrome (drawer + theme toggle).
+mountShell()
 
 let nameOf = () => $('@name').value || 'friend'
 

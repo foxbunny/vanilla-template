@@ -96,7 +96,12 @@ input, button, textarea, select { font: inherit; color: inherit; }
 	--ring: 0.15rem;                         /* focus outline width */
 	--shadow: 0 0.15rem 0.5rem oklch(20% 0.03 var(--h) / 0.12);
 
+	--overlay: oklch(20% 0.03 var(--h) / 0.4);  /* dim sheet behind a drawer or dialog */
+
 	--tap: 2.75rem;                          /* min touch target */
+
+	--sidebar-w: 15rem;                      /* app-shell nav width */
+	--header-h: 3.5rem;                      /* app-shell top-bar height */
 
 	--fast: 0.12s;
 	--slow: 0.3s;
@@ -220,6 +225,135 @@ button[data-variant="danger"]:hover { --btn-bg: var(--danger); --btn-ink: var(--
 button:disabled, .button[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
 
 
+/* ── App shell ───────────────────────────────────────────────────────────────
+   The frame every page shares: a full-height top bar + side nav + scrolling
+   content, and — on a narrow screen — the nav folding into a slide-in drawer. A
+   page writes the shell markup (copy index.html's) and fills the content; the
+   look and the behaviour both live here. Whether the drawer is open is a data-*
+   on the shell that JS flips (mountShell in common.js) and CSS animates. */
+
+.app-shell {
+	height: 100dvh;
+	display: grid;
+	grid-template-columns: var(--sidebar-w) 1fr;
+	grid-template-rows: auto 1fr;
+	grid-template-areas:
+		"header header"
+		"sidebar main";
+}
+
+/* Top bar. */
+.app-header {
+	grid-area: header;
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	min-height: var(--header-h);
+	padding-inline: var(--space-3);
+	border-bottom: 0.1rem solid var(--line);
+}
+
+.brand {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	color: var(--ink);
+	font-weight: 700;
+	text-decoration: none;
+}
+.brand x-icon { font-size: 1.3em; color: var(--accent); }
+
+.header-actions { margin-inline-start: auto; display: flex; gap: var(--space-1); }
+
+/* A square, icon-only button: the shared button, only the shape changes. */
+.icon-btn {
+	min-width: var(--tap);
+	padding: var(--space-2);
+	border-radius: var(--radius);
+}
+.icon-btn x-icon { font-size: 1.25em; }
+
+/* Side nav. */
+.sidebar {
+	grid-area: sidebar;
+	display: flex;
+	flex-direction: column;
+	padding: var(--space-2);
+	border-inline-end: 0.1rem solid var(--line);
+	overflow: auto;
+}
+
+/* A list (ul > li) of icon + label links. The current page is not a link — it's
+   a plain <span>, so it can't be clicked or tabbed to and its non-link-ness marks
+   it as current on its own (no aria-current needed). It's filled with the accent
+   like the primary button; the icon quiets to muted on the links until then. */
+.side-nav { --flow-space: var(--space-1); }
+.side-nav ul { list-style: none; padding: 0; }
+.side-nav a, .side-nav span {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+	min-height: var(--tap);
+	padding: var(--space-2) var(--space-3);
+	border-radius: var(--radius);
+	color: var(--ink);
+	text-decoration: none;
+}
+.side-nav a x-icon, .side-nav span x-icon { font-size: 1.2em; color: var(--muted); }
+.side-nav a:hover { background: oklch(from var(--accent) l c h / 0.12); }
+.side-nav span { background: var(--accent); color: var(--accent-ink); }
+.side-nav span x-icon { color: inherit; }
+
+/* A second nav group sinks to the bottom of the sidebar. */
+.side-foot { margin-block-start: auto; }
+
+/* Content — the only part that scrolls. */
+.content { grid-area: main; overflow: auto; padding: var(--space-4); }
+
+/* The hamburger only exists on narrow screens (see the drawer below). */
+.menu-toggle { display: none; }
+
+/* The drawer. On a narrow screen the nav leaves the grid, becomes a floating
+   panel, and slides in when the shell is marked open; an overlay dims the
+   content behind it. */
+.overlay { display: none; }
+
+@media (width < 48rem) {
+	.app-shell {
+		grid-template-columns: 1fr;
+		grid-template-areas:
+			"header"
+			"main";
+	}
+
+	.menu-toggle { display: inline-flex; }
+
+	.sidebar {
+		position: fixed;
+		inset-block: var(--header-h) 0;
+		inset-inline-start: 0;
+		z-index: 30;
+		width: min(80vw, var(--sidebar-w));
+		background: oklch(var(--surface-l) var(--c) var(--h));
+		transform: translateX(-100%);
+		transition: transform var(--slow);
+	}
+	.app-shell[data-sidebar="open"] .sidebar { transform: none; }
+
+	.overlay {
+		display: block;
+		position: fixed;
+		inset: 0;
+		z-index: 20;
+		background: var(--overlay);
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity var(--slow), visibility var(--slow);
+	}
+	.app-shell[data-sidebar="open"] .overlay { opacity: 1; visibility: visible; }
+}
+
+
 /* ── Forms ─────────────────────────────────────────────────────────────────
    Labels wrap their control, so no `for`/`id` bookkeeping. Validation styling
    uses :user-invalid, which only fires after the user has actually interacted —
@@ -252,14 +386,75 @@ fieldset { border: 0.1rem solid var(--line); border-radius: var(--radius); paddi
 legend { padding-inline: var(--space-2); font-weight: 600; }
 
 
-/* ── Cards / sections ──────────────────────────────────────────────────── */
+/* ── Cards ───────────────────────────────────────────────────────────────────
+   A framed surface: border, rounded corners, a shadow, and a tone from the layer
+   system above (a card inside a card deepens a step on its own). The frame adds
+   NO padding of its own, so a header strip or an image can run edge to edge;
+   overflow is clipped so those full-bleed children follow the rounded corners.
 
-/* Surface tone comes from the layer system above; this adds the chrome. */
+   Build the inside from optional parts:
+     .card-head   full-width header bar, one tone deeper, divided by a line
+     .card-media  an image (or figure) filling the width, corner to corner
+     .card-body   a padded content region — the only part that pads its content
+   A plain text card is just `.card .card-body` (both classes on one element). */
+
 .card {
-	padding: var(--space-4);
 	border: 0.1rem solid var(--line);
 	border-radius: var(--radius);
 	box-shadow: var(--shadow);
+	overflow: hidden;
+}
+
+.card-head {
+	padding: var(--space-3) var(--space-4);
+	border-bottom: 0.1rem solid var(--line);
+	font-weight: 600;
+	/* One layer-step deeper than the card it sits in — darker in light mode,
+	   raised in dark, the same shift nested surfaces already use. */
+	background: oklch(calc(var(--_l) + var(--layer-step)) var(--c) var(--h));
+}
+
+.card-body { padding: var(--space-4); }
+
+.card-media { display: block; width: 100%; height: auto; }
+
+
+/* ── Card layouts ────────────────────────────────────────────────────────────
+   Four ready-made containers for a set of cards — put the cards straight inside.
+   Two knobs: --card-gap (space between cards) and --card-min (a card's smallest
+   width before the row wraps or scrolls). Set either on the container to retune. */
+
+/* Grid: as many columns as fit at --card-min wide, wrapping down the page.
+   .card-grid keeps each card its natural height; .card-grid-flush makes every
+   card in a row match the tallest, so their edges line up flush. */
+.card-grid, .card-grid-flush {
+	display: grid;
+	gap: var(--card-gap, var(--space-3));
+	grid-template-columns: repeat(auto-fill, minmax(var(--card-min, 15rem), 1fr));
+}
+.card-grid { align-items: start; }
+.card-grid-flush { align-items: stretch; }
+
+/* Carousel: one scrolling row that snaps to each card. Cards hold --card-min and
+   don't shrink, so the row runs off-screen and scrolls sideways. */
+.card-carousel {
+	display: flex;
+	gap: var(--card-gap, var(--space-3));
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	padding-bottom: var(--space-2);
+	overscroll-behavior-x: contain;
+}
+.card-carousel > * {
+	flex: 0 0 var(--card-min, 15rem);
+	scroll-snap-align: start;
+}
+
+/* Stack: a single column, each card under the last. */
+.card-stack {
+	display: flex;
+	flex-direction: column;
+	gap: var(--card-gap, var(--space-3));
 }
 
 
@@ -277,7 +472,7 @@ dialog {
 	color: var(--ink);
 	box-shadow: var(--shadow);
 }
-dialog::backdrop { background: oklch(20% 0.03 var(--h) / 0.4); backdrop-filter: blur(2px); }
+dialog::backdrop { background: var(--overlay); backdrop-filter: blur(2px); }
 
 
 /* ── Details / summary ─────────────────────────────────────────────────── */

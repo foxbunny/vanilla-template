@@ -4,49 +4,83 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Examples · Vanilla Template</title>
+	<meta name="description" content="One self-contained page per pattern — copy the one you need.">
+
 	<link rel="stylesheet" href="../common.css">
+	<link rel="stylesheet" href="index.css">
 	<link rel="icon" href="../icons.svg#icon-star">
-	<script type="module" src="../common.js"></script>
-	<style>
-		body { max-width: 44rem; margin-inline: auto; padding: var(--space-4); }
-		.grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); }
-		a.card { display: grid; gap: var(--space-1); text-decoration: none; color: inherit; }
-		a.card:hover { border-color: var(--accent); }
-		a.card b { display: flex; align-items: center; gap: var(--space-2); }
-		a.card span { color: var(--muted); font-size: 0.9em; }
-	</style>
+	<script type="module" src="index.js"></script>
 </head>
 <body>
-	<h1>Examples</h1>
-	<p class="muted">One self-contained page per pattern. Each imports the same
-		<code>../common.js</code> and <code>../common.css</code> the app ships —
-		copy the one you need.</p>
 
-	<div class="grid" style="margin-top: var(--space-4)">
-		<a class="card" href="../index.html">
-			<b><x-icon name="check"></x-icon> Local-first list</b>
-			<span>IndexedDB + the keyed reconciler + cross-tab sync. The canonical page.</span>
+<!-- Same app shell as every page — top bar, left nav, drawer on narrow screens.
+     The Examples link is the current page. See index.html for the full notes. -->
+<div class="app-shell" data-part="shell" data-sidebar="closed">
+
+	<header class="app-header">
+		<button class="icon-btn menu-toggle" data-variant="ghost" data-part="menu-toggle"
+			aria-label="Toggle menu">
+			<x-icon name="menu"></x-icon>
+		</button>
+
+		<a class="brand" href="../index.html">
+			<x-icon name="check"></x-icon>
+			<span>Vanilla</span>
 		</a>
-		<a class="card" href="data-table.html">
-			<b><x-icon name="menu"></x-icon> Data table</b>
-			<span>Sort and paginate a list through <code>renderList</code>.</span>
-		</a>
-		<a class="card" href="reorder.html">
-			<b><x-icon name="arrow-right"></x-icon> Drag to reorder</b>
-			<span>Pointer events + View Transitions for the animated move.</span>
-		</a>
-		<a class="card" href="popover-menu.html">
-			<b><x-icon name="settings"></x-icon> Popover menu</b>
-			<span>Native <code>popover</code> light-dismiss + CSS anchor positioning.</span>
-		</a>
-		<a class="card" href="form-validation.html">
-			<b><x-icon name="edit"></x-icon> Form validation</b>
-			<span>Constraint validation + <code>:user-invalid</code> + FormData.</span>
-		</a>
-		<a class="card" href="i18n-fragments.html">
-			<b><x-icon name="user"></x-icon> Localized fragments</b>
-			<span>Variant matrix + <code>_name_fr.html</code> loaded on demand.</span>
-		</a>
-	</div>
+
+		<div class="header-actions">
+			<button class="icon-btn" data-variant="ghost" data-part="theme-toggle" aria-label="Toggle theme">
+				<x-icon name="moon"></x-icon>
+			</button>
+		</div>
+	</header>
+
+	<aside class="sidebar">
+		<nav class="side-nav" aria-label="Primary">
+			<ul class="flow">
+				<li><a href="../index.html"><x-icon name="check"></x-icon> Tasks</a></li>
+				<li><span><x-icon name="star"></x-icon> Examples</span></li>
+				<li><a href="../design-system.html"><x-icon name="heart"></x-icon> Design System</a></li>
+			</ul>
+		</nav>
+	</aside>
+
+	<div class="overlay" data-part="overlay"></div>
+
+	<main class="content ex-main flow">
+
+		<header class="flow">
+			<h1>Examples</h1>
+			<p class="muted">Each page is a self-contained demo of one common UI
+				pattern. Copy the one closest to what you're building.</p>
+		</header>
+
+		<div class="card-grid-flush">
+			<a class="card" href="data-table.html">
+				<header class="card-head"><x-icon name="menu"></x-icon> Data table</header>
+				<p class="card-body">Sort and paginate a list through <code>renderList</code>.</p>
+			</a>
+			<a class="card" href="reorder.html">
+				<header class="card-head"><x-icon name="arrow-right"></x-icon> Drag to reorder</header>
+				<p class="card-body">Pointer events + View Transitions for the animated move.</p>
+			</a>
+			<a class="card" href="popover-menu.html">
+				<header class="card-head"><x-icon name="settings"></x-icon> Popover menu</header>
+				<p class="card-body">Native <code>popover</code> light-dismiss + CSS anchor positioning.</p>
+			</a>
+			<a class="card" href="form-validation.html">
+				<header class="card-head"><x-icon name="edit"></x-icon> Form validation</header>
+				<p class="card-body">Constraint validation + <code>:user-invalid</code> + FormData.</p>
+			</a>
+			<a class="card" href="i18n-fragments.html">
+				<header class="card-head"><x-icon name="user"></x-icon> Localized fragments</header>
+				<p class="card-body">Variant matrix + <code>_name_fr.html</code> loaded on demand.</p>
+			</a>
+		</div>
+
+	</main>
+
+</div>
+
 </body>
 </html>
